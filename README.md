@@ -1,5 +1,12 @@
 # NeuroScan: Autonomous Clinical Brain Tumor MRI Diagnosis via Deep Residual-Attention Convolutional Networks
 
+[![DOI](https://zenodo.org/badge/1456968685.svg)](https://zenodo.org/badge/latestdoi/1456968685)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![PyTorch 2.1+](https://img.shields.io/badge/PyTorch-2.1+-ee4c2c.svg)](https://pytorch.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Project Lead](https://img.shields.io/badge/Project%20Lead-Dar%20Rehan%20Rasool-0284c7.svg)](https://github.com/darrehanrasool)
+
+
 An end-to-end Machine Learning and Neuro-Radiological diagnostic system that classifies multi-class brain neoplasms (**Glioblastoma/Glioma**, **Dural Convexity Meningioma**, and **Sellar Pituitary Macroadenoma**) vs. **Normal Healthy Brain Parenchyma** on axial magnetic resonance imaging (MRI). Features exhaustive clinical exploratory data analysis (EDA), natural class imbalance mitigation, strict zero data leakage holdout verification, Gradient-Weighted Class Activation Mapping (Grad-CAM) explainability, lesion difference subtraction mapping, and a real-time clinical PACS diagnostic dashboard with synthesized audio narration and printable medical reports.
 
 > [!IMPORTANT]
