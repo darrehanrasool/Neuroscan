@@ -1,6 +1,6 @@
 {
   "title": "NEUROSCAN: Clinical Brain MRI Tumor Diagnostic Engine with Explainable AI (Grad-CAM) and From-Scratch Convolutional Architecture",
-  "description": "NEUROSCAN is an AI project for brain tumor detection and classification in T1 contrast-enhanced axial MRI scans under the faculty supervision of Dr. Syed Wajid Alam.",
+  "description": "Clinical artificial intelligence diagnostic platform for brain tumor detection and multi-class classification in T1 contrast-enhanced MRI scans with Grad-CAM explainability.",
   "creators": [
     {
       "name": "Rasool, Dar Rehan",
@@ -8,7 +8,7 @@
       "orcid": "0009-0004-6426-5195"
     },
     {
-      "name": "Pampori, Shafiya",
+      "name": "Pampori, Shafiya Bashir",
       "affiliation": "Islamic University of Science and Technology (IUST), Awantipora, Jammu & Kashmir, India"
     },
     {
@@ -17,16 +17,13 @@
     }
   ],
   "access_right": "open",
-  "license": "LicenseRef-Academic-AI-Project",
+  "license": "MIT",
   "keywords": [
-    "Brain MRI Neoplasms",
-    "Glioblastoma",
-    "Meningioma",
-    "Pituitary Adenoma",
-    "Explainable AI",
-    "Grad-CAM",
-    "Deep Learning",
-    "AI Project",
-    "PyTorch"
+    "brain-mri",
+    "neuro-oncology",
+    "explainable-ai",
+    "grad-cam",
+    "deep-learning",
+    "tumor-classification"
   ]
 }
