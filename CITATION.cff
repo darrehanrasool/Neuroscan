@@ -10,6 +10,7 @@ type: software
 authors:
   - family-names: "Rasool"
     given-names: "Dar Rehan"
+    orcid: "https://orcid.org/0009-0004-6426-5195"
     affiliation: "Islamic University of Science and Technology (IUST), Awantipora, Jammu & Kashmir, India"
     role: "Project Lead (M.Tech Student)"
     email: "rehanrasool@iust.ac.in"
