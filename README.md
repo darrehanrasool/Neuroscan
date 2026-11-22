@@ -1,10 +1,22 @@
 # NeuroScan: Autonomous Clinical Brain Tumor MRI Diagnosis via Deep Residual-Attention Convolutional Networks
 
-[![DOI](https://zenodo.org/badge/1456968685.svg)](https://zenodo.org/badge/latestdoi/1456968685)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch 2.1+](https://img.shields.io/badge/PyTorch-2.1+-ee4c2c.svg)](https://pytorch.org/)
+[![Next.js 14](https://img.shields.io/badge/Next.js-14.0+-black.svg?logo=next.js)](https://nextjs.org/)
+[![TypeScript 5+](https://img.shields.io/badge/TypeScript-5.0+-3178c6.svg?logo=typescript)](https://www.typescriptlang.org/)
+[![CI Workflow](https://img.shields.io/badge/CI%20Workflow-passing-brightgreen.svg?logo=github-actions)](https://github.com/darrehanrasool/Neuroscan/actions/workflows/ci.yml)
+[![Holdout Test Acc: 94.44%](https://img.shields.io/badge/Holdout%20Test%20Acc-94.44%25-brightgreen.svg)](accuracy.txt)
+[![Macro F1: 94.38%](https://img.shields.io/badge/Macro%20F1-94.38%25-emerald.svg)](accuracy.txt)
+[![Zero Data Leakage](https://img.shields.io/badge/Data%20Leakage-0.0%25%20Verified-blue.svg)](accuracy.txt)
+[![Explainable AI: Grad-CAM](https://img.shields.io/badge/Explainable%20AI-Grad--CAM%20Hooks-purple.svg)](reports/figures/)
+[![Architecture: 5-Stage ResNet-SE](https://img.shields.io/badge/Architecture-ResNet--SE%20CNN-darkgreen.svg)](ai_engine/)
+[![Clinical Cohort: 4 Classes](https://img.shields.io/badge/Cohort-Glioma%20%7C%20Meningioma%20%7C%20Pituitary-red.svg)](data/)
+[![DOI](https://zenodo.org/badge/1456968685.svg)](https://zenodo.org/badge/latestdoi/1456968685)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Code Style: Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 [![Project Lead](https://img.shields.io/badge/Project%20Lead-Dar%20Rehan%20Rasool-0284c7.svg)](https://github.com/darrehanrasool)
+[![Copyright](https://img.shields.io/badge/Copyright-%40darrehanrasool-10b981.svg)](https://github.com/darrehanrasool)
 
 
 An end-to-end Machine Learning and Neuro-Radiological diagnostic system that classifies multi-class brain neoplasms (**Glioblastoma/Glioma**, **Dural Convexity Meningioma**, and **Sellar Pituitary Macroadenoma**) vs. **Normal Healthy Brain Parenchyma** on axial magnetic resonance imaging (MRI). Features exhaustive clinical exploratory data analysis (EDA), natural class imbalance mitigation, strict zero data leakage holdout verification, Gradient-Weighted Class Activation Mapping (Grad-CAM) explainability, lesion difference subtraction mapping, and a real-time clinical PACS diagnostic dashboard with synthesized audio narration and printable medical reports.
