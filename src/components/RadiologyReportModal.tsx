@@ -24,7 +24,7 @@ export const RadiologyReportModal: React.FC<Props> = ({ mriCase, onClose }) => {
           <div className="flex items-center space-x-2">
             <span className="flex h-3 w-3 rounded-full bg-cyan-400 animate-ping" />
             <span className="text-xs font-mono font-semibold tracking-wider text-cyan-300 uppercase">
-              Clinical Diagnostic Report & Patient Dossier
+              Machine Learning Diagnostic Evaluation &amp; Research Analysis Report
             </span>
           </div>
           <div className="flex items-center space-x-3">
@@ -33,7 +33,7 @@ export const RadiologyReportModal: React.FC<Props> = ({ mriCase, onClose }) => {
               className="flex items-center px-4 py-2 text-xs font-semibold text-slate-100 bg-cyan-600 hover:bg-cyan-500 rounded-lg shadow-md transition-colors"
             >
               <Printer className="w-3.5 h-3.5 mr-1.5" />
-              Print / Save Clinical PDF
+              Print / Save Research Report (PDF)
             </button>
             <button
               onClick={onClose}
@@ -49,32 +49,32 @@ export const RadiologyReportModal: React.FC<Props> = ({ mriCase, onClose }) => {
           id="printable-report"
           className="p-8 bg-white text-slate-900 rounded-xl shadow-lg font-sans text-xs leading-relaxed border border-slate-300"
         >
-          {/* Hospital Header */}
+          {/* Document Header */}
           <div className="text-center pb-4 mb-6 border-b-2 border-slate-900">
             <div className="flex justify-between items-start mb-2">
               <div className="text-left">
-                <span className="text-[10px] font-mono text-slate-500 uppercase block">Accreditation #</span>
-                <span className="font-mono font-bold text-slate-800 text-xs">JCI-RAD-2026-X99</span>
+                <span className="text-[10px] font-mono text-slate-500 uppercase block">Project Type</span>
+                <span className="font-mono font-bold text-slate-800 text-xs">Academic ML Research Tool</span>
               </div>
               <div>
                 <h1 className="text-xl sm:text-2xl font-black tracking-wide uppercase text-slate-950 font-serif">
-                  NeuroScan Advanced Radiology Institute
+                  NEUROSCAN MACHINE LEARNING DIAGNOSTIC REPORT
                 </h1>
                 <p className="text-xs text-slate-600 font-medium">
-                  Department of Diagnostic Neuro-Oncology & Explainable AI (XAI)
+                  Academic Research &amp; Educational Evaluation Platform • Multi-Class Brain MRI Analysis
                 </p>
               </div>
               <div className="text-right">
-                <span className="text-[10px] font-mono text-slate-500 uppercase block">Report Date</span>
+                <span className="text-[10px] font-mono text-slate-500 uppercase block">Evaluation Date</span>
                 <span className="font-mono font-bold text-slate-800 text-xs">17-Nov-2026</span>
               </div>
             </div>
             <p className="text-[11px] text-slate-500 border-t border-slate-200 pt-1 mt-1">
-              DICOM PACS Network • 3.0T High-Field Cranial MRI Suite • Ref: NEURO-XAI-DIAGNOSTIC-DOSSIER
+              Deep Learning Diagnostic Workstation • 3.0T Axial Cranial MRI Study • Ref: NEUROSCAN-RUO-EVAL-REPORT
             </p>
             <div className="mt-2 flex items-center justify-between text-[10px] text-cyan-800 font-mono bg-cyan-50 px-2.5 py-1 rounded border border-cyan-200">
-              <span>Deep Learning Validation Benchmark: 94.44% Test Concordance (Cohen&apos;s κ = 0.9247)</span>
-              <span>Zero-Leakage Stratified Holdout (N=90)</span>
+              <span>Deep Learning Holdout Benchmark: 94.44% Accuracy (Cohen&apos;s κ = 0.9247)</span>
+              <span>Zero Data Leakage Sealed Test Cohort (N=90)</span>
             </div>
           </div>
 
@@ -244,17 +244,23 @@ export const RadiologyReportModal: React.FC<Props> = ({ mriCase, onClose }) => {
             This automated radiology report was compiled by an academic deep convolutional neural network for machine learning research demonstration and engineering evaluation only. It is <strong>NOT</strong> an approved Software as a Medical Device (SaMD) and has not been cleared by FDA/EMA/CDSCO. It must <strong>NOT</strong> be used for primary medical diagnosis, patient care, surgical intervention, or therapeutic decision-making. All clinical determinations must be made by licensed neuroradiologists and medical professionals.
           </div>
 
-          {/* Attestation & Signature Footer */}
+          {/* Academic Research Attribution & Algorithmic Verification Block (No clinical signature) */}
           <div className="pt-4 border-t-2 border-slate-900 flex flex-col sm:flex-row justify-between items-start sm:items-end text-xs gap-4">
             <div>
-              <p className="font-bold text-slate-900">Dar Rehan Rasool, B.Tech / ML Research Fellow</p>
-              <p className="text-slate-600 text-[11px]">Department of Computer Science & Deep Learning Diagnostics</p>
-              <p className="text-slate-500 text-[10px]">Verified via PyTorch Custom CNN & Grad-CAM Gradient Saliency</p>
+              <p className="font-bold text-slate-900 text-xs">Research Project: NeuroScan-AI Multi-Class Diagnostic Engine</p>
+              <p className="text-slate-600 text-[11px]">
+                Supervised by <strong>Dr. Syed Wajid Alam*</strong> (Department of Artificial Intelligence, IUST)
+              </p>
+              <p className="text-slate-500 text-[10px]">
+                Student Researchers: Dar Rehan Rasool, Shafiya Bashir Pampori &amp; Muneeb Syed Shah
+              </p>
             </div>
-            <div className="text-right">
-              <div className="font-serif italic text-base text-slate-800 font-bold">Dar Rehan Rasool</div>
-              <div className="w-36 h-0.5 bg-slate-900 ml-auto mb-1" />
-              <p className="text-[10px] text-slate-500 uppercase tracking-wider">Authorized Digital Signature</p>
+            <div className="text-left sm:text-right font-mono text-[10px] text-slate-600 space-y-0.5">
+              <div className="inline-block px-2 py-0.5 rounded bg-slate-100 border border-slate-300 font-bold text-slate-800">
+                STATUS: RESEARCH USE ONLY (RUO)
+              </div>
+              <p className="text-slate-500">Automated PyTorch CNN &amp; Grad-CAM XAI Verification</p>
+              <p className="text-slate-400">Non-Clinical Educational Evaluation • No Physician Signature Required</p>
             </div>
           </div>
         </div>

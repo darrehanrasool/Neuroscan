@@ -463,6 +463,7 @@ This research project and clinical diagnostic workstation is collaboratively dev
 | **Faculty Research Supervisor** | **Dr. Syed Wajid Alam\*** | Assistant Professor, Department of Artificial Intelligence, IUST | Project Conceptualization, Research Supervision & Strategic Clinical Architecture Direction |
 | **Project Lead & Contributing Student** | [**Dar Rehan Rasool**](https://github.com/darrehanrasool) | M.Tech Student, Centre for Artificial Intelligence, IUST | Deep Residual-SE CNN Pipeline, Zero-Leakage Holdout Benchmarking, Three.js 3D Projector Hologram & PACS Workstation |
 | **Contributing Student** | [**Shafiya Bashir Pampori**](https://github.com/shafiyabashirpampori) | M.Tech Student, Centre for Artificial Intelligence, IUST | Multi-Class Clinical Cohort Curation, Statistical Exploratory Data Analysis & Diagnostic Reporting |
+| **Contributing Student** | [**Muneeb Syed Shah**](https://github.com/muneebsyed-oss) | M.Tech Student, Centre for Artificial Intelligence, IUST | DICOM Preprocessing Pipeline, Cross-Dataset Validation & Holdout Testing Telemetry |
 
 - **Academic Unit**: Centre for Artificial Intelligence (CAI) & Department of Artificial Intelligence
 - **Institution**: Islamic University of Science and Technology (IUST), Awantipora, Jammu & Kashmir, India
@@ -478,7 +479,7 @@ This project is licensed under the MIT License. See [LICENSE](LICENSE) for detai
 If referencing this work in academic presentations or publications, please cite:
 ```bibtex
 @software{alam2026neuroscan,
-  author = {Dr. Syed Wajid Alam and Dar Rehan Rasool and Shafiya Bashir Pampori},
+  author = {Dr. Syed Wajid Alam and Dar Rehan Rasool and Shafiya Bashir Pampori and Muneeb Syed Shah},
   title = {NeuroScan: Multi-Class Brain Tumor MRI Diagnosis via Deep Residual-Attention Networks and Zero-Leakage Holdout Benchmarking},
   year = {2026},
   url = {https://github.com/darrehanrasool/Neuroscan}

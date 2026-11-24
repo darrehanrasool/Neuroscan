@@ -22,6 +22,10 @@ authors:
     given-names: "Shafiya Bashir"
     role: "M.Tech Student"
     affiliation: "Islamic University of Science and Technology (IUST), Awantipora, Jammu & Kashmir, India"
+  - family-names: "Shah"
+    given-names: "Muneeb Syed"
+    role: "M.Tech Student"
+    affiliation: "Islamic University of Science and Technology (IUST), Awantipora, Jammu & Kashmir, India"
 keywords:
   - "Brain MRI Tumor Detection"
   - "Glioblastoma"
