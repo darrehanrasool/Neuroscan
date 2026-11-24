@@ -6,7 +6,6 @@ import { medicalAudio } from "@/lib/medicalAudioEngine";
 import { MRIViewer, VisualizationMode } from "@/components/MRIViewer";
 import { Brain3DViewer } from "@/components/Brain3DViewer";
 import { RadiologyReportModal } from "@/components/RadiologyReportModal";
-import { AcademicDefenseModal } from "@/components/AcademicDefenseModal";
 import { UploadMRIModal } from "@/components/UploadMRIModal";
 import {
   Activity,
@@ -66,7 +65,6 @@ export default function Home() {
 
   // Modals
   const [showReportModal, setShowReportModal] = useState<boolean>(false);
-  const [showDefenseModal, setShowDefenseModal] = useState<boolean>(false);
   const [showUploadModal, setShowUploadModal] = useState<boolean>(false);
 
   // Human-in-the-Loop Active Learning Feedback State
@@ -181,12 +179,11 @@ export default function Home() {
     medicalAudio.setVoiceEnabled(voiceEnabled);
   }, [soundEnabled, voiceEnabled]);
 
-  // Initial welcome trigger
+  // Initial setup: populate transcript without autoplaying speech/alarm
   useEffect(() => {
-    const timer = setTimeout(() => {
-      handleSelectCase(PRELOADED_MRI_CASES[0]);
-    }, 600);
-    return () => clearTimeout(timer);
+    const mriCase = PRELOADED_MRI_CASES[0];
+    const speechText = `Case loaded: ${mriCase.diagnosis} localized in the ${mriCase.brainRegion}. Select any patient case or click play to start voice narration.`;
+    setSpokenTranscript(speechText);
   }, []);
 
   const getSeverityBadge = (severity: MRICase["severity"]) => {
@@ -298,15 +295,6 @@ export default function Home() {
               }`}
             >
               <Mic className="w-4 h-4" />
-            </button>
-
-            {/* Academic Defense & 12 Figures Modal Button */}
-            <button
-              onClick={() => setShowDefenseModal(true)}
-              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-purple-950/60 hover:bg-purple-900/80 text-purple-300 border border-purple-700/60 text-xs font-semibold shadow-md transition-all font-mono"
-            >
-              <BarChart3 className="w-4 h-4 text-purple-400" />
-              <span className="hidden md:inline">12 Figures & ML Defense</span>
             </button>
 
             {/* Clinical Radiology Report Modal Button */}
@@ -891,12 +879,6 @@ export default function Home() {
           onClose={() => setShowReportModal(false)}
         />
       )}
-
-      {/* Academic Defense & 12 Figures Modal */}
-      <AcademicDefenseModal
-        isOpen={showDefenseModal}
-        onClose={() => setShowDefenseModal(false)}
-      />
     </div>
   );
 }

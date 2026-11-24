@@ -31,8 +31,14 @@ export const Brain3DViewer: React.FC<Brain3DViewerProps> = ({
   const [autoRotate, setAutoRotate] = useState(true);
   const [clipY, setClipY] = useState(3.0); // clipping plane height (3.0 = no clip)
   const [brainOpacity, setBrainOpacity] = useState(0.35);
-  const [showEdema, setShowEdema] = useState(true);
   const [activeCase, setActiveCase] = useState<MRICase>(currentCase);
+
+  // Anatomical Layer Toggles
+  const [showSkull, setShowSkull] = useState(false);
+  const [showArteries, setShowArteries] = useState(true);
+  const [showVentricles, setShowVentricles] = useState(true);
+  const [showCortex, setShowCortex] = useState(true);
+  const [showEdema, setShowEdema] = useState(true);
 
   // References for Three.js state
   const sceneRef = useRef<THREE.Scene | null>(null);
@@ -41,6 +47,9 @@ export const Brain3DViewer: React.FC<Brain3DViewerProps> = ({
   const controlsRef = useRef<OrbitControls | null>(null);
   const tumorGroupRef = useRef<THREE.Group | null>(null);
   const brainGroupRef = useRef<THREE.Group | null>(null);
+  const skullGroupRef = useRef<THREE.Group | null>(null);
+  const arteryGroupRef = useRef<THREE.Group | null>(null);
+  const ventricleGroupRef = useRef<THREE.Group | null>(null);
   const clipPlaneRef = useRef<THREE.Plane | null>(null);
 
   // Sync with prop changes
@@ -163,15 +172,15 @@ export const Brain3DViewer: React.FC<Brain3DViewerProps> = ({
     controls.autoRotateSpeed = 1.8;
     controlsRef.current = controls;
 
-    // 4. Lights (Cyan & Blue surgical theater spotlights)
-    const ambientLight = new THREE.AmbientLight(0x1a2b4c, 1.2);
+    // 4. Lights (Cyan & Surgical Blue spotlights)
+    const ambientLight = new THREE.AmbientLight(0x1a2b4c, 1.4);
     scene.add(ambientLight);
 
-    const dirLight1 = new THREE.DirectionalLight(0x00f0ff, 2.0);
+    const dirLight1 = new THREE.DirectionalLight(0x00f0ff, 2.2);
     dirLight1.position.set(5, 8, 5);
     scene.add(dirLight1);
 
-    const dirLight2 = new THREE.DirectionalLight(0x7928ca, 1.5);
+    const dirLight2 = new THREE.DirectionalLight(0x7928ca, 1.6);
     dirLight2.position.set(-5, -3, -5);
     scene.add(dirLight2);
 
@@ -179,15 +188,53 @@ export const Brain3DViewer: React.FC<Brain3DViewerProps> = ({
     pointLight.position.set(0, 0, 0);
     scene.add(pointLight);
 
-    // 5. 3D Anatomical Brain Cortex Construction (Left & Right Hemispheres)
+    // 5. Clipping Plane for Axial Cross-Sectioning
     const clipPlane = new THREE.Plane(new THREE.Vector3(0, -1, 0), clipY);
     clipPlaneRef.current = clipPlane;
 
+    // ==========================================
+    // LAYER A: CRANIAL SKULL VAULT (CALVARIUM)
+    // ==========================================
+    const skullGroup = new THREE.Group();
+    skullGroupRef.current = skullGroup;
+    scene.add(skullGroup);
+
+    const skullGeo = new THREE.SphereGeometry(1.92, 48, 48);
+    skullGeo.scale(1.04, 1.12, 1.36);
+    const skullMat = new THREE.MeshStandardMaterial({
+      color: 0xede8d5, // Ivory bone color
+      roughness: 0.85,
+      metalness: 0.05,
+      transparent: true,
+      opacity: 0.22,
+      side: THREE.DoubleSide,
+      clippingPlanes: [clipPlane],
+      clipShadows: true,
+    });
+    const skullMesh = new THREE.Mesh(skullGeo, skullMat);
+    skullMesh.position.set(0, 0.1, 0);
+    skullGroup.add(skullMesh);
+
+    // Cranial Suture Lines (Coronal & Sagittal Sutures)
+    const suturePoints: THREE.Vector3[] = [];
+    for (let theta = -Math.PI / 2; theta <= Math.PI / 2; theta += 0.06) {
+      const y = Math.cos(theta) * 1.93 * 1.12 + 0.1;
+      const z = Math.sin(theta) * 1.93 * 1.36;
+      if (y > -0.15) suturePoints.push(new THREE.Vector3(0, y, z));
+    }
+    const sutureGeo = new THREE.BufferGeometry().setFromPoints(suturePoints);
+    const sutureMat = new THREE.LineBasicMaterial({ color: 0xc4b89b, transparent: true, opacity: 0.45 });
+    const sutureMesh = new THREE.Line(sutureGeo, sutureMat);
+    skullGroup.add(sutureMesh);
+    skullGroup.visible = showSkull;
+
+    // ==========================================
+    // LAYER B: CEREBRAL CORTEX (GYRI & SULCI)
+    // ==========================================
     const brainGroup = new THREE.Group();
     brainGroupRef.current = brainGroup;
     scene.add(brainGroup);
 
-    // Procedural Gyri-Sulci Cortex Geometry
     const buildHemisphere = (isLeft: boolean) => {
       const geo = new THREE.SphereGeometry(1.6, 64, 64);
       const pos = geo.attributes.position;
@@ -196,24 +243,24 @@ export const Brain3DViewer: React.FC<Brain3DViewerProps> = ({
       for (let i = 0; i < pos.count; i++) {
         v.fromBufferAttribute(pos, i);
 
-        // Flatten medial side (interhemispheric fissure)
+        // Flatten medial interhemispheric fissure
         if (isLeft && v.x < 0.05) v.x = Math.max(v.x, 0.02);
         if (!isLeft && v.x > -0.05) v.x = Math.min(v.x, -0.02);
 
-        // Elongate anterior-posterior (frontal/occipital length)
+        // Elongate anterior-posterior (frontal to occipital pole)
         v.z *= 1.35;
         v.y *= 1.1;
 
-        // Taper frontal and temporal poles
+        // Frontal & temporal tapering
         if (v.z > 0.8) v.x *= 0.88;
-        if (v.y < -0.4 && v.z > 0.1) v.x *= 1.05; // temporal lobe flare
+        if (v.y < -0.4 && v.z > 0.1) v.x *= 1.05; // temporal flare
 
         // Cerebellar recess
         if (v.z < -1.1 && v.y < -0.3) {
           v.y += 0.3;
         }
 
-        // Procedural gyri & sulci sinusoidal folds
+        // Procedural gyral convolutions & sulcal fissures
         const fold =
           Math.sin(v.x * 7.5) * Math.cos(v.y * 6.5) * Math.sin(v.z * 5.5) * 0.08 +
           Math.sin(v.x * 14.0 + v.y * 12.0) * 0.035;
@@ -223,7 +270,6 @@ export const Brain3DViewer: React.FC<Brain3DViewerProps> = ({
       }
       geo.computeVertexNormals();
 
-      // Translucent Glassy Cortex Material with clipping
       const mat = new THREE.MeshPhysicalMaterial({
         color: 0x38bdf8,
         emissive: 0x03254c,
@@ -242,7 +288,6 @@ export const Brain3DViewer: React.FC<Brain3DViewerProps> = ({
       const mesh = new THREE.Mesh(geo, mat);
       mesh.position.x = isLeft ? 0.08 : -0.08;
 
-      // Subtle wireframe rim outline for projector holographic pop
       const wireMat = new THREE.MeshBasicMaterial({
         color: 0x00f0ff,
         wireframe: true,
@@ -262,7 +307,7 @@ export const Brain3DViewer: React.FC<Brain3DViewerProps> = ({
     brainGroup.add(buildHemisphere(true));
     brainGroup.add(buildHemisphere(false));
 
-    // Brainstem & Cerebellum Anchor
+    // Brainstem & Pons Anchor
     const stemGeo = new THREE.CylinderGeometry(0.3, 0.45, 1.2, 32);
     const stemMat = new THREE.MeshStandardMaterial({
       color: 0x1e3a8a,
@@ -275,12 +320,179 @@ export const Brain3DViewer: React.FC<Brain3DViewerProps> = ({
     stemMesh.position.set(0, -1.5, -0.4);
     brainGroup.add(stemMesh);
 
-    // 6. Tumor Group Container
+    // Cerebellar folia (posterior fossa)
+    const cerebGeo = new THREE.SphereGeometry(0.7, 32, 32);
+    cerebGeo.scale(1.2, 0.8, 0.9);
+    const cerebMat = new THREE.MeshStandardMaterial({
+      color: 0x1e40af,
+      roughness: 0.35,
+      transparent: true,
+      opacity: 0.55,
+      clippingPlanes: [clipPlane]
+    });
+    const cerebMesh = new THREE.Mesh(cerebGeo, cerebMat);
+    cerebMesh.position.set(0, -1.05, -1.0);
+    brainGroup.add(cerebMesh);
+    brainGroup.visible = showCortex;
+
+    // ==========================================
+    // LAYER C: CEREBRAL ARTERIAL TREE (CIRCLE OF WILLIS & MCAs)
+    // ==========================================
+    const arteryGroup = new THREE.Group();
+    arteryGroupRef.current = arteryGroup;
+    scene.add(arteryGroup);
+
+    const arteryMat = new THREE.MeshStandardMaterial({
+      color: 0xff1744, // Vivid crimson arterial blood
+      emissive: 0xd50000,
+      emissiveIntensity: 0.7,
+      roughness: 0.25,
+      metalness: 0.3,
+      clippingPlanes: [clipPlane],
+    });
+
+    const createArteryBranch = (pts: THREE.Vector3[], radius = 0.035) => {
+      const curve = new THREE.CatmullRomCurve3(pts);
+      const tubeGeo = new THREE.TubeGeometry(curve, 32, radius, 8, false);
+      const mesh = new THREE.Mesh(tubeGeo, arteryMat);
+      arteryGroup.add(mesh);
+    };
+
+    // Basilar Artery (ascending ventral pons)
+    createArteryBranch([
+      new THREE.Vector3(0, -1.5, -0.35),
+      new THREE.Vector3(0, -1.0, -0.25),
+      new THREE.Vector3(0, -0.5, -0.15),
+    ], 0.045);
+
+    // Left & Right Internal Carotid Arteries (ICA) ascending from skull base
+    createArteryBranch([
+      new THREE.Vector3(-0.35, -1.4, 0.0),
+      new THREE.Vector3(-0.32, -0.8, 0.05),
+      new THREE.Vector3(-0.25, -0.4, 0.1),
+    ], 0.045);
+
+    createArteryBranch([
+      new THREE.Vector3(0.35, -1.4, 0.0),
+      new THREE.Vector3(0.32, -0.8, 0.05),
+      new THREE.Vector3(0.25, -0.4, 0.1),
+    ], 0.045);
+
+    // Circle of Willis anastomotic ring
+    createArteryBranch([
+      new THREE.Vector3(-0.25, -0.4, 0.1),
+      new THREE.Vector3(-0.15, -0.38, 0.22),
+      new THREE.Vector3(0.15, -0.38, 0.22),
+      new THREE.Vector3(0.25, -0.4, 0.1),
+      new THREE.Vector3(0.15, -0.42, -0.05),
+      new THREE.Vector3(0, -0.45, -0.12),
+      new THREE.Vector3(-0.15, -0.42, -0.05),
+      new THREE.Vector3(-0.25, -0.4, 0.1),
+    ], 0.038);
+
+    // Middle Cerebral Arteries (MCA - M1/M2 branches arching into Sylvian Fissures)
+    createArteryBranch([
+      new THREE.Vector3(-0.25, -0.4, 0.1),
+      new THREE.Vector3(-0.65, -0.2, 0.25),
+      new THREE.Vector3(-1.1, 0.05, 0.3),
+      new THREE.Vector3(-1.3, 0.4, 0.15),
+    ], 0.035);
+    createArteryBranch([
+      new THREE.Vector3(-1.1, 0.05, 0.3),
+      new THREE.Vector3(-1.25, -0.2, 0.4),
+    ], 0.025);
+
+    // Right MCA (Notice: courses along right temporal lobe near Glioma centroid)
+    createArteryBranch([
+      new THREE.Vector3(0.25, -0.4, 0.1),
+      new THREE.Vector3(0.65, -0.2, 0.25),
+      new THREE.Vector3(1.1, 0.05, 0.3),
+      new THREE.Vector3(1.3, 0.4, 0.15),
+    ], 0.035);
+    createArteryBranch([
+      new THREE.Vector3(1.1, 0.05, 0.3),
+      new THREE.Vector3(1.25, -0.2, 0.4),
+    ], 0.025);
+
+    // Anterior Cerebral Arteries (ACA - Pericallosal arching up midline)
+    createArteryBranch([
+      new THREE.Vector3(-0.15, -0.38, 0.22),
+      new THREE.Vector3(-0.12, 0.2, 0.55),
+      new THREE.Vector3(-0.1, 0.7, 0.4),
+      new THREE.Vector3(-0.08, 0.9, -0.1),
+    ], 0.032);
+
+    createArteryBranch([
+      new THREE.Vector3(0.15, -0.38, 0.22),
+      new THREE.Vector3(0.12, 0.2, 0.55),
+      new THREE.Vector3(0.1, 0.7, 0.4),
+      new THREE.Vector3(0.08, 0.9, -0.1),
+    ], 0.032);
+
+    // Posterior Cerebral Arteries (PCA - wrapping around midbrain to occipital lobes)
+    createArteryBranch([
+      new THREE.Vector3(0, -0.45, -0.12),
+      new THREE.Vector3(-0.35, -0.35, -0.45),
+      new THREE.Vector3(-0.75, -0.2, -0.85),
+    ], 0.032);
+
+    createArteryBranch([
+      new THREE.Vector3(0, -0.45, -0.12),
+      new THREE.Vector3(0.35, -0.35, -0.45),
+      new THREE.Vector3(0.75, -0.2, -0.85),
+    ], 0.032);
+    arteryGroup.visible = showArteries;
+
+    // ==========================================
+    // LAYER D: VENTRICULAR SYSTEM (LATERAL & 3RD VENTRICLES)
+    // ==========================================
+    const ventricleGroup = new THREE.Group();
+    ventricleGroupRef.current = ventricleGroup;
+    scene.add(ventricleGroup);
+
+    const ventricleMat = new THREE.MeshPhysicalMaterial({
+      color: 0x00e5ff,
+      emissive: 0x0091ea,
+      emissiveIntensity: 0.55,
+      roughness: 0.15,
+      transmission: 0.7,
+      transparent: true,
+      opacity: 0.75,
+      clippingPlanes: [clipPlane],
+    });
+
+    const buildLateralVentricle = (isLeft: boolean) => {
+      const sign = isLeft ? 1 : -1;
+      const curve = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(sign * 0.22, 0.25, 0.55), // Frontal horn
+        new THREE.Vector3(sign * 0.28, 0.48, 0.15), // Body
+        new THREE.Vector3(sign * 0.38, 0.32, -0.45), // Atrium / Trigone
+        new THREE.Vector3(sign * 0.42, 0.15, -0.75), // Occipital horn
+        new THREE.Vector3(sign * 0.52, -0.15, -0.1), // Temporal horn
+      ]);
+      const tubeGeo = new THREE.TubeGeometry(curve, 32, 0.085, 12, false);
+      const mesh = new THREE.Mesh(tubeGeo, ventricleMat);
+      ventricleGroup.add(mesh);
+    };
+
+    buildLateralVentricle(true);
+    buildLateralVentricle(false);
+
+    // 3rd Ventricle at midline
+    const thirdVentGeo = new THREE.BoxGeometry(0.08, 0.35, 0.5);
+    const thirdVentMesh = new THREE.Mesh(thirdVentGeo, ventricleMat);
+    thirdVentMesh.position.set(0, 0.15, -0.05);
+    ventricleGroup.add(thirdVentMesh);
+    ventricleGroup.visible = showVentricles;
+
+    // ==========================================
+    // LAYER E: PATHOLOGICAL TUMOR MASS & EDEMA
+    // ==========================================
     const tumorGroup = new THREE.Group();
     tumorGroupRef.current = tumorGroup;
     scene.add(tumorGroup);
 
-    // 7. Grid Base Hologram Platform
+    // Grid Base Hologram Platform
     const grid = new THREE.GridHelper(12, 24, 0x00f0ff, 0x1e293b);
     grid.position.y = -2.2;
     scene.add(grid);
@@ -293,7 +505,7 @@ export const Brain3DViewer: React.FC<Brain3DViewerProps> = ({
     ringMesh.position.y = -2.18;
     scene.add(ringMesh);
 
-    // 8. Animation Render Loop
+    // Animation Render Loop
     let animId: number;
     const clock = new THREE.Clock();
 
@@ -356,6 +568,23 @@ export const Brain3DViewer: React.FC<Brain3DViewerProps> = ({
     }
   }, [autoRotate]);
 
+  // Update Layer Visibility Toggles Live
+  useEffect(() => {
+    if (skullGroupRef.current) skullGroupRef.current.visible = showSkull;
+  }, [showSkull]);
+
+  useEffect(() => {
+    if (arteryGroupRef.current) arteryGroupRef.current.visible = showArteries;
+  }, [showArteries]);
+
+  useEffect(() => {
+    if (ventricleGroupRef.current) ventricleGroupRef.current.visible = showVentricles;
+  }, [showVentricles]);
+
+  useEffect(() => {
+    if (brainGroupRef.current) brainGroupRef.current.visible = showCortex;
+  }, [showCortex]);
+
   // Update Brain Opacity & Clipping Plane
   useEffect(() => {
     if (clipPlaneRef.current) {
@@ -399,7 +628,6 @@ export const Brain3DViewer: React.FC<Brain3DViewerProps> = ({
 
       // Central Necrotic Core (dark red, irregular)
       const coreGeo = new THREE.DodecahedronGeometry(0.38, 3);
-      // deform vertices to look biological
       const pos = coreGeo.attributes.position;
       for (let i = 0; i < pos.count; i++) {
         const v = new THREE.Vector3().fromBufferAttribute(pos, i);
@@ -433,7 +661,7 @@ export const Brain3DViewer: React.FC<Brain3DViewerProps> = ({
       ringMesh.position.copy(tumorPos);
       group.add(ringMesh);
 
-      // Vasogenic Edema Cloud (T2/FLAIR hyperintensity - glowing green/cyan halo)
+      // Vasogenic Edema Cloud (T2/FLAIR hyperintensity - glowing green halo)
       if (showEdema) {
         const edemaGeo = new THREE.SphereGeometry(0.95, 32, 32);
         const edemaMat = new THREE.MeshPhysicalMaterial({
@@ -450,7 +678,7 @@ export const Brain3DViewer: React.FC<Brain3DViewerProps> = ({
         group.add(edemaMesh);
       }
 
-      // Beacon coordinate callout line
+      // Coordinate callout line
       const lineMat = new THREE.LineBasicMaterial({ color: 0xff1744, transparent: true, opacity: 0.8 });
       const points = [tumorPos.clone(), new THREE.Vector3(tumorPos.x + 0.8, tumorPos.y + 1.2, tumorPos.z + 0.4)];
       const lineGeo = new THREE.BufferGeometry().setFromPoints(points);
@@ -462,7 +690,6 @@ export const Brain3DViewer: React.FC<Brain3DViewerProps> = ({
       const tumorPos = new THREE.Vector3(-0.95, 0.95, -0.2);
 
       const menGeo = new THREE.SphereGeometry(0.48, 32, 32);
-      // Flatten towards dura
       menGeo.scale(0.85, 1.15, 1.0);
       const menMat = new THREE.MeshStandardMaterial({
         color: 0xf59e0b,
@@ -475,78 +702,80 @@ export const Brain3DViewer: React.FC<Brain3DViewerProps> = ({
       menMesh.position.copy(tumorPos);
       group.add(menMesh);
 
-      // Pathognomonic Dural Tail (linear enhancing tail along convex dura)
+      // Pathognomonic Dural Tail
       const tailCurve = new THREE.QuadraticBezierCurve3(
         tumorPos.clone(),
-        new THREE.Vector3(tumorPos.x - 0.3, tumorPos.y + 0.35, tumorPos.z - 0.2),
-        new THREE.Vector3(tumorPos.x - 0.5, tumorPos.y + 0.6, tumorPos.z - 0.35)
+        new THREE.Vector3(-1.15, 1.2, -0.3),
+        new THREE.Vector3(-1.45, 1.35, -0.5)
       );
-      const tailGeo = new THREE.TubeGeometry(tailCurve, 20, 0.05, 8, false);
-      const tailMat = new THREE.MeshBasicMaterial({ color: 0xfbbf24 });
+      const tailGeo = new THREE.TubeGeometry(tailCurve, 20, 0.04, 8, false);
+      const tailMat = new THREE.MeshStandardMaterial({
+        color: 0xfbbf24,
+        emissive: 0xd97706,
+        emissiveIntensity: 0.9
+      });
       const tailMesh = new THREE.Mesh(tailGeo, tailMat);
       group.add(tailMesh);
 
     } else if (cls === "pituitary") {
-      // Sellar & Suprasellar Adenoma at Skull Base (Center Midline Base)
-      const tumorPos = new THREE.Vector3(0.0, -0.85, 0.35);
+      // Sellar / Suprasellar Dumbbell Mass at skull base
+      const tumorPos = new THREE.Vector3(0.0, -0.35, 0.25);
 
-      // Sellar Base Mass
-      const sellaGeo = new THREE.SphereGeometry(0.32, 32, 32);
-      sellaGeo.scale(1.2, 0.9, 1.0);
-      const sellaMat = new THREE.MeshStandardMaterial({
-        color: 0xc084fc,
-        emissive: 0x9333ea,
-        emissiveIntensity: 0.9,
+      const pitGeo = new THREE.SphereGeometry(0.42, 32, 32);
+      pitGeo.scale(1.0, 1.4, 0.9); // Vertical waist dumbbell
+      const pitMat = new THREE.MeshStandardMaterial({
+        color: 0xa855f7,
+        emissive: 0x7e22ce,
+        emissiveIntensity: 0.85,
         roughness: 0.3
       });
-      const sellaMesh = new THREE.Mesh(sellaGeo, sellaMat);
-      sellaMesh.position.copy(tumorPos);
-      group.add(sellaMesh);
+      const pitMesh = new THREE.Mesh(pitGeo, pitMat);
+      pitMesh.position.copy(tumorPos);
+      group.add(pitMesh);
 
-      // Suprasellar Waist (Snowman configuration extending towards optic chiasm)
-      const upperGeo = new THREE.SphereGeometry(0.24, 32, 32);
-      const upperMesh = new THREE.Mesh(upperGeo, sellaMat);
-      upperMesh.position.set(tumorPos.x, tumorPos.y + 0.26, tumorPos.z + 0.05);
-      group.add(upperMesh);
+      // Optic Chiasm compression plane indicator
+      const chiasmGeo = new THREE.BoxGeometry(0.8, 0.05, 0.2);
+      const chiasmMat = new THREE.MeshStandardMaterial({
+        color: 0xec4899,
+        emissive: 0xbe185d,
+        emissiveIntensity: 0.6
+      });
+      const chiasmMesh = new THREE.Mesh(chiasmGeo, chiasmMat);
+      chiasmMesh.position.set(0.0, -0.05, 0.32);
+      group.add(chiasmMesh);
 
     } else {
-      // Normal Healthy Brain: No neoplasm, add gentle anatomical ventricular glow
-      const ventMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, wireframe: true, transparent: true, opacity: 0.25 });
-      const ventGeo = new THREE.TorusGeometry(0.5, 0.06, 16, 32);
-      const leftVent = new THREE.Mesh(ventGeo, ventMat);
-      leftVent.position.set(0.3, 0.1, 0.0);
-      leftVent.rotation.y = Math.PI / 4;
-      group.add(leftVent);
-
-      const rightVent = new THREE.Mesh(ventGeo, ventMat);
-      rightVent.position.set(-0.3, 0.1, 0.0);
-      rightVent.rotation.y = -Math.PI / 4;
-      group.add(rightVent);
+      // Normal Brain: Clean baseline with Ventricular highlight
+      const normGeo = new THREE.RingGeometry(0.3, 0.34, 32);
+      const normMat = new THREE.MeshBasicMaterial({ color: 0x10b981, side: THREE.DoubleSide });
+      const normMesh = new THREE.Mesh(normGeo, normMat);
+      normMesh.position.set(0, 0, 0);
+      group.add(normMesh);
     }
   }, [activeCase, showEdema]);
 
   return (
     <div
       ref={containerRef}
-      className={`relative w-full rounded-2xl overflow-hidden bg-slate-950 border border-slate-800 shadow-2xl flex flex-col ${
-        isFullscreen || isProjectorStandalone ? "h-screen rounded-none border-none" : "h-[540px]"
-      }`}
+      className={`relative w-full ${
+        isProjectorStandalone ? "h-screen bg-black" : "h-[540px] bg-slate-950 rounded-2xl"
+      } overflow-hidden select-none`}
     >
-      {/* Top HUD: Presentation & Projector Telemetry Overlay */}
-      <div className="absolute top-4 left-4 right-4 z-20 flex flex-wrap items-center justify-between gap-3 pointer-events-none">
-        {/* Active Neoplasm Diagnostic Pill */}
-        <div className="pointer-events-auto flex items-center space-x-2.5 px-4 py-2 rounded-xl bg-slate-900/90 border border-cyan-500/40 backdrop-blur-md shadow-lg shadow-cyan-950/40">
-          <span
-            className={`w-3 h-3 rounded-full animate-ping ${
+      {/* Top Floating Telemetry & Mode Indicator */}
+      <div className="absolute top-4 left-4 right-4 z-20 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
+        {/* Diagnostic Badge */}
+        <div className="pointer-events-auto flex items-center space-x-2 px-3.5 py-1.5 rounded-xl bg-slate-900/90 border border-slate-800 backdrop-blur-md shadow-2xl">
+          <div
+            className={`w-3 h-3 rounded-full ${
               activeCase.severity === "danger"
-                ? "bg-red-400"
+                ? "bg-red-500 animate-ping"
                 : activeCase.severity === "warning"
-                ? "bg-amber-400"
-                : "bg-emerald-400"
+                ? "bg-amber-500 animate-pulse"
+                : "bg-emerald-500"
             }`}
           />
           <div>
-            <div className="text-[10px] font-mono text-cyan-400 uppercase tracking-widest font-bold flex items-center space-x-1.5">
+            <div className="text-[10px] font-mono text-cyan-400 flex items-center space-x-1">
               <Sparkles className="w-3 h-3" />
               <span>3D Holographic Projector Mode</span>
             </div>
@@ -555,6 +784,68 @@ export const Brain3DViewer: React.FC<Brain3DViewerProps> = ({
           <span className="ml-2 px-2 py-0.5 rounded bg-black/60 text-xs font-mono font-bold text-cyan-300 border border-slate-800">
             {activeCase.confidence}% Confidence
           </span>
+        </div>
+
+        {/* Anatomical Layer Selector Deck */}
+        <div className="pointer-events-auto flex flex-wrap items-center gap-1.5 bg-slate-900/90 p-1.5 rounded-xl border border-slate-800 backdrop-blur-md">
+          <span className="text-[10px] font-mono text-slate-400 px-1 hidden md:inline">LAYERS:</span>
+          
+          <button
+            onClick={() => setShowSkull(!showSkull)}
+            title="Toggle Cranial Vault / Skull Bone Calvarium"
+            className={`px-2 py-1 rounded-lg text-[11px] font-mono transition-all flex items-center space-x-1 ${
+              showSkull ? "bg-amber-600 text-white font-bold" : "bg-slate-800 text-slate-400 hover:text-white"
+            }`}
+          >
+            <span>💀</span>
+            <span>Skull</span>
+          </button>
+
+          <button
+            onClick={() => setShowArteries(!showArteries)}
+            title="Toggle Cerebral Arterial Tree (Circle of Willis & MCAs)"
+            className={`px-2 py-1 rounded-lg text-[11px] font-mono transition-all flex items-center space-x-1 ${
+              showArteries ? "bg-red-600 text-white font-bold" : "bg-slate-800 text-slate-400 hover:text-white"
+            }`}
+          >
+            <span>🩸</span>
+            <span>Arteries</span>
+          </button>
+
+          <button
+            onClick={() => setShowCortex(!showCortex)}
+            title="Toggle Cerebral Cortex & Parenchyma"
+            className={`px-2 py-1 rounded-lg text-[11px] font-mono transition-all flex items-center space-x-1 ${
+              showCortex ? "bg-cyan-600 text-white font-bold" : "bg-slate-800 text-slate-400 hover:text-white"
+            }`}
+          >
+            <span>🧠</span>
+            <span>Cortex</span>
+          </button>
+
+          <button
+            onClick={() => setShowVentricles(!showVentricles)}
+            title="Toggle Ventricular System (CSF)"
+            className={`px-2 py-1 rounded-lg text-[11px] font-mono transition-all flex items-center space-x-1 ${
+              showVentricles ? "bg-blue-600 text-white font-bold" : "bg-slate-800 text-slate-400 hover:text-white"
+            }`}
+          >
+            <span>💧</span>
+            <span>Ventricles</span>
+          </button>
+
+          {activeCase.classification.toLowerCase() === "glioma" && (
+            <button
+              onClick={() => setShowEdema(!showEdema)}
+              title="Toggle Vasogenic Edema Cloud"
+              className={`px-2 py-1 rounded-lg text-[11px] font-mono transition-all flex items-center space-x-1 ${
+                showEdema ? "bg-emerald-600 text-white font-bold" : "bg-slate-800 text-slate-400 hover:text-white"
+              }`}
+            >
+              <span>🟢</span>
+              <span>Edema</span>
+            </button>
+          )}
         </div>
 
         {/* Presentation Controls Deck */}
@@ -585,19 +876,6 @@ export const Brain3DViewer: React.FC<Brain3DViewerProps> = ({
             <RotateCcw className="w-3.5 h-3.5" />
           </button>
 
-          {/* Edema Halo Toggle */}
-          {activeCase.classification.toLowerCase() === "glioma" && (
-            <button
-              onClick={() => setShowEdema(!showEdema)}
-              title="Toggle Vasogenic Edema Cloud"
-              className={`px-2.5 py-1.5 rounded-lg text-xs font-mono transition-all ${
-                showEdema ? "bg-emerald-600/80 text-white font-bold" : "bg-slate-800 text-slate-400"
-              }`}
-            >
-              Edema Halo
-            </button>
-          )}
-
           {/* Projector Window Launcher (Dual Display Mode) */}
           {!isProjectorStandalone && (
             <button
@@ -608,7 +886,7 @@ export const Brain3DViewer: React.FC<Brain3DViewerProps> = ({
               className="p-2 rounded-lg bg-indigo-600/80 hover:bg-indigo-500 text-white text-xs flex items-center space-x-1 font-bold"
             >
               <Monitor className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Projector Window</span>
+              <span className="hidden sm:inline">Projector</span>
             </button>
           )}
 
@@ -652,7 +930,7 @@ export const Brain3DViewer: React.FC<Brain3DViewerProps> = ({
               value={clipY}
               onChange={(e) => setClipY(parseFloat(e.target.value))}
               className="w-24 accent-amber-400 cursor-pointer"
-              title="Slice through brain cortex to reveal deep-seated tumors"
+              title="Slice through brain cortex & skull to reveal deep-seated tumors"
             />
             {clipY < 2.4 && (
               <button

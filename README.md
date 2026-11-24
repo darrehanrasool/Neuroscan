@@ -340,14 +340,18 @@ To bring clinical presentation and academic defense to the next level, Neuroscan
 ```
 
 ### Key Capabilities:
-1. **Interactive Three.js 3D Holographic Rendering:**
-   - **Translucent Cerebral Cortex:** Realistic bilateral hemispheres with procedural sulcal and gyral folds, subcortical lateral ventricles, and brainstem.
+1. **Interactive Multi-Layered 3D Holographic Rendering (Three.js WebGL):**
+   - **Cranial Skull Vault (Calvarium):** Semi-transparent ivory bone envelope with coronal and sagittal suture lines, accurately enclosing the brain anatomy.
+   - **Cerebral Arterial Vasculature Tree:** High-resolution 3D arterial network rendering the **Circle of Willis**, **Internal Carotid Arteries (ICA)**, **Middle Cerebral Arteries (MCA)** arching through the Sylvian fissure, **Anterior Cerebral Arteries (ACA)**, and **Basilar Artery**, demonstrating neurovascular feeding vessels and tumor proximity.
+   - **Ventricular System (CSF):** C-shaped bilateral lateral ventricles (frontal horn, body, atrium, temporal horn) and 3rd ventricle in luminous fluid cyan.
+   - **Translucent Cerebral Cortex:** Bilateral hemispheres with procedural sulcal and gyral folds, cerebellum, and brainstem.
    - **Pathological 3D Tumor Morphologies:**
      - **Glioblastoma (Glioma):** Multi-layered irregular malignant core in vibrant orange-red with an expansive pulsing green vasogenic edema cloud.
      - **Dural Meningioma:** Circumscribed extra-axial amber convex mass attached along the parietal convexity with simulated dural tail vector.
      - **Pituitary Macroadenoma:** Sellar and suprasellar dumbbell mass situated at the cranial base in royal purple.
      - **Normal Control:** Clear translucent brain model highlighting intact ventricular symmetry and zero mass effect.
-   - **Dynamic 3D Axial Clipping Cross-Section:** An interactive axial plane cutter slider that slices through the cortical mantle in real-time, allowing clinicians to inspect internal subcortical lesion depth and ventricular effacement.
+   - **Layer Visibility Toggles:** Dedicated HUD pill controls to toggle `[💀 Skull]`, `[🩸 Arteries]`, `[🧠 Cortex]`, `[💧 Ventricles]`, and `[🟢 Edema]` independently.
+   - **Dynamic 3D Axial Clipping Cross-Section:** An interactive axial plane cutter slider that slices through bone and cortical mantle simultaneously, allowing clinicians to inspect internal subcortical lesion depth, arterial displacement, and ventricular effacement.
    - **360° Continuous Orbit Rotation & Cinematic Shading:** Automatic slow rotation with interactive mouse/trackpad drag orbit, pan, and zoom.
 
 2. **Dedicated Stage Projector Route (`/projector`):**
@@ -391,9 +395,7 @@ The workstation integrates several advanced clinical tools designed for real rad
    - Live audio waveform visualizer and Play / Stop / Replay controls.
 4. **Comprehensive Radiology / Medical Report Modal (PDF Print Ready):**
    - Click **"Medical Report (PDF)"** to open an official hospital dossier with patient demographics, MRN, scan protocol, AI clinical impression, differential diagnosis probability table, radiologist notes, and authorized signature.
-5. **Academic Defense & 12 Figures Modal:**
-   - Click **"12 Figures & ML Defense"** to open an interactive modal containing all 12 publication figures, mathematical formulations, and faculty Q&A talking points.
-6. **Human-in-the-Loop (HITL) Active Learning Audit Loop (`/api/feedback`):**
+5. **Human-in-the-Loop (HITL) Active Learning Audit Loop (`/api/feedback`):**
    - Addresses clinical validation requirements: neuroradiologists can verify or override AI inferences via **Accept AI Diagnosis**, **Correct Diagnosis (Select True Class)**, or **Reject as Outlier**.
    - Every action and clinician commentary is permanently recorded with timestamp, case ID, physician notes, and unique cryptographic audit tracking in `data/feedback_audit_log.json`, establishing a continuous active retraining pipeline.
 
