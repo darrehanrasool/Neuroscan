@@ -195,6 +195,15 @@ To eliminate this artifact and create a production-grade academic system, I re-e
   └─────────────────────────┘
 ```
 
+### 🌐 Next-Gen Multi-Modal Research Architecture (Draw.io Specification)
+
+The complete institutional multi-modal pipeline—incorporating **Skull Calvarium Stripping**, **Cerebral Arterial Vasculature MRA Segmentation (Circle of Willis & MCAs)**, **Tissue Bed Parcellation**, **Regional Anatomical Sub-Network Specialists**, **Biophysical Reaction-Diffusion Tumor Growth PDEs**, and **Dual-Display Stage Projector HUD**—is diagrammed and editable in Draw.io:
+
+- **Editable Draw.io File:** [neuro_oncology_research_pipeline.drawio](neuro_oncology_research_pipeline.drawio) (open directly in [app.diagrams.net](https://app.diagrams.net) or Draw.io desktop)
+- **High-Resolution Vector SVG:** [reports/neuro_oncology_research_pipeline.svg](reports/neuro_oncology_research_pipeline.svg)
+
+![Neuro-Oncology Research Architecture](reports/neuro_oncology_research_pipeline.svg)
+
 ### Mathematical Formulations:
 
 1. **Inverse Class Frequency Weighting:**

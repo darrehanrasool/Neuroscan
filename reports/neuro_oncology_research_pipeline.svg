@@ -1,0 +1,212 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1380" width="100%" height="100%" style="background-color: #030712; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="bgGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#030712" />
+      <stop offset="50%" stop-color="#0b1329" />
+      <stop offset="100%" stop-color="#030712" />
+    </linearGradient>
+
+    <linearGradient id="cyanGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0284c7" />
+      <stop offset="100%" stop-color="#06b6d4" />
+    </linearGradient>
+
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#000000" flood-opacity="0.6"/>
+    </filter>
+
+    <filter id="cyanGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <marker id="arrowCyan" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#38bdf8" />
+    </marker>
+    <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#10b981" />
+    </marker>
+    <marker id="arrowRose" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#f43f5e" />
+    </marker>
+    <marker id="arrowRed" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#ef4444" />
+    </marker>
+    <marker id="arrowOrange" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#f97316" />
+    </marker>
+    <marker id="arrowPurple" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#a855f7" />
+    </marker>
+    <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#3b82f6" />
+    </marker>
+    <marker id="arrowTeal" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#14b8a6" />
+    </marker>
+  </defs>
+
+  <rect width="100%" height="100%" fill="url(#bgGlow)" />
+
+  <!-- Top Title Banner -->
+  <g transform="translate(100, 24)" filter="url(#shadow)">
+    <rect width="1000" height="64" rx="12" fill="#090d16" stroke="#1e293b" stroke-width="2" />
+    <text x="500" y="32" fill="#38bdf8" font-size="19" font-weight="800" text-anchor="middle" letter-spacing="1.5">NEUROSCAN NEXT-GEN RESEARCH ARCHITECTURE</text>
+    <text x="500" y="52" fill="#94a3b8" font-size="12.5" font-weight="500" text-anchor="middle">Multi-Modal Hierarchical Anatomical Routing &amp; Biophysical Tumor Growth Diffusion Pipeline</text>
+  </g>
+
+  <!-- Node 1: Raw Multi-Parametric MRI Scan -->
+  <g transform="translate(380, 115)" filter="url(#shadow)">
+    <rect width="440" height="70" rx="10" fill="#0f172a" stroke="#0284c7" stroke-width="2" />
+    <text x="220" y="32" fill="#38bdf8" font-size="15" font-weight="bold" text-anchor="middle">Raw Multi-Parametric MRI Scan</text>
+    <text x="220" y="52" fill="#cbd5e1" font-size="12.5" text-anchor="middle">(T1, T1-CE, T2, FLAIR, 3D TOF-MRA)</text>
+  </g>
+
+  <!-- Arrow 1 -> 2 -->
+  <line x1="600" y1="185" x2="600" y2="218" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#arrowCyan)" />
+
+  <!-- Node 2: Stage 1 Pre-Processing -->
+  <g transform="translate(380, 225)" filter="url(#shadow)">
+    <rect width="440" height="96" rx="10" fill="#1e293b" stroke="#38bdf8" stroke-width="2" />
+    <text x="220" y="26" fill="#38bdf8" font-size="13.5" font-weight="bold" text-anchor="middle">STAGE 1: PRE-PROCESSING &amp; SKULL STRIPPING</text>
+    <line x1="20" y1="36" x2="420" y2="36" stroke="#334155" stroke-width="1" />
+    <text x="25" y="54" fill="#e2e8f0" font-size="11.5">• <tspan font-weight="bold">HD-BET:</tspan> Deep Neural Brain Extraction &amp; Calvarium Stripping</text>
+    <text x="25" y="70" fill="#e2e8f0" font-size="11.5">• <tspan font-weight="bold">N4ITK:</tspan> Low-Frequency B0/B1 RF Bias Field Inhomogeneity Correction</text>
+    <text x="25" y="86" fill="#e2e8f0" font-size="11.5">• <tspan font-weight="bold">Rigid Co-registration:</tspan> Mutual Information Alignment to SRI24 Atlas</text>
+  </g>
+
+  <!-- Arrow 2 -> 3 -->
+  <line x1="600" y1="321" x2="600" y2="354" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#arrowCyan)" />
+
+  <!-- Node 3: Stage 2 Anatomical Parcellation -->
+  <g transform="translate(380, 360)" filter="url(#shadow)">
+    <rect width="440" height="66" rx="10" fill="#1e1b4b" stroke="#6366f1" stroke-width="2" />
+    <text x="220" y="28" fill="#818cf8" font-size="14" font-weight="bold" text-anchor="middle">STAGE 2: ANATOMICAL PARCELLATION</text>
+    <text x="220" y="48" fill="#c7d2fe" font-size="12" text-anchor="middle">(TotalSegmentator MRI / Self-Configuring 3D nnU-Net Engine)</text>
+  </g>
+
+  <!-- Branching Arrows from Stage 2 to Left/Right Branches -->
+  <path d="M 490 426 L 490 448 L 340 448 L 340 464" fill="none" stroke="#10b981" stroke-width="2.5" marker-end="url(#arrowGreen)" />
+  <path d="M 710 426 L 710 448 L 860 448 L 860 464" fill="none" stroke="#f43f5e" stroke-width="2.5" marker-end="url(#arrowRose)" />
+
+  <!-- Node 4: Left Branch - Tissue Bed Parcellation -->
+  <g transform="translate(140, 470)" filter="url(#shadow)">
+    <rect width="400" height="110" rx="10" fill="#064e3b" stroke="#10b981" stroke-width="2" />
+    <text x="200" y="25" fill="#34d399" font-size="13.5" font-weight="bold" text-anchor="middle">TISSUE BED PARCELLATION</text>
+    <line x1="20" y1="34" x2="380" y2="34" stroke="#065f46" stroke-width="1" />
+    <text x="25" y="52" fill="#e2e8f0" font-size="11.5">• <tspan font-weight="bold">Calvarium &amp; Dura:</tspan> Outer meningeal boundaries</text>
+    <text x="25" y="68" fill="#e2e8f0" font-size="11.5">• <tspan font-weight="bold">Supratentorial Cortex:</tspan> Frontal, Temporal, Parietal, Occipital</text>
+    <text x="25" y="84" fill="#e2e8f0" font-size="11.5">• <tspan font-weight="bold">Sella Turcica / Skull Base:</tspan> Sphenoid &amp; suprasellar cistern</text>
+    <text x="25" y="100" fill="#e2e8f0" font-size="11.5">• <tspan font-weight="bold">Infratentorial:</tspan> Cerebellum &amp; Brainstem/Pons</text>
+  </g>
+
+  <!-- Node 5: Right Branch - Vascular MRA Segmentation -->
+  <g transform="translate(660, 470)" filter="url(#shadow)">
+    <rect width="400" height="110" rx="10" fill="#881337" stroke="#f43f5e" stroke-width="2" />
+    <text x="200" y="25" fill="#fb7185" font-size="13.5" font-weight="bold" text-anchor="middle">VASCULAR MRA SEGMENTATION</text>
+    <line x1="20" y1="34" x2="380" y2="34" stroke="#9f1239" stroke-width="1" />
+    <text x="25" y="52" fill="#e2e8f0" font-size="11.5">• <tspan font-weight="bold">Circle of Willis:</tspan> ACom, PCom &amp; anastomotic ring</text>
+    <text x="25" y="68" fill="#e2e8f0" font-size="11.5">• <tspan font-weight="bold">Middle Cerebral Artery (MCA):</tspan> M1/M2 Sylvian branches</text>
+    <text x="25" y="84" fill="#e2e8f0" font-size="11.5">• <tspan font-weight="bold">Feeding Trunks:</tspan> Basilar &amp; Internal Carotid Arteries (ICA)</text>
+    <text x="25" y="100" fill="#e2e8f0" font-size="11.5">• <tspan font-weight="bold">Vessel Encasement &amp; Strain:</tspan> Hemodynamic ischemic risk</text>
+  </g>
+
+  <!-- Converging Arrows to Stage 3 Regional Router -->
+  <path d="M 340 580 L 340 600 L 490 600 L 490 614" fill="none" stroke="#10b981" stroke-width="2.5" marker-end="url(#arrowGreen)" />
+  <path d="M 860 580 L 860 600 L 710 600 L 710 614" fill="none" stroke="#f43f5e" stroke-width="2.5" marker-end="url(#arrowRose)" />
+
+  <!-- Node 6: Stage 3 Regional Router -->
+  <g transform="translate(380, 620)" filter="url(#shadow)">
+    <rect width="440" height="68" rx="10" fill="#451a03" stroke="#f59e0b" stroke-width="2" />
+    <text x="220" y="28" fill="#fbbf24" font-size="14" font-weight="bold" text-anchor="middle">STAGE 3: REGIONAL ANATOMICAL ROUTER</text>
+    <text x="220" y="48" fill="#fde68a" font-size="12" text-anchor="middle">Evaluates tissue compartment &amp; routes to specialized sub-networks</text>
+  </g>
+
+  <!-- Branching Arrows from Stage 3 to Model A, B, C -->
+  <path d="M 445 688 L 445 708 L 235 708 L 235 722" fill="none" stroke="#ef4444" stroke-width="2.5" marker-end="url(#arrowRed)" />
+  <line x1="600" y1="688" x2="600" y2="722" stroke="#f97316" stroke-width="2.5" marker-end="url(#arrowOrange)" />
+  <path d="M 755 688 L 755 708 L 965 708 L 965 722" fill="none" stroke="#a855f7" stroke-width="2.5" marker-end="url(#arrowPurple)" />
+
+  <!-- Node 7: Model A - Glial Tumor Specialist -->
+  <g transform="translate(80, 730)" filter="url(#shadow)">
+    <rect width="310" height="130" rx="10" fill="#450a0a" stroke="#ef4444" stroke-width="2" />
+    <text x="155" y="26" fill="#f87171" font-size="13" font-weight="bold" text-anchor="middle">MODEL A: GLIAL TUMOR SPECIALIST</text>
+    <line x1="15" y1="36" x2="295" y2="36" stroke="#7f1d1d" stroke-width="1" />
+    <text x="20" y="54" fill="#fecaca" font-size="11.5">• <tspan font-weight="bold">Infiltrative Glioblastoma (GBM)</tspan></text>
+    <text x="20" y="70" fill="#fecaca" font-size="11.5">• White matter tract migration</text>
+    <text x="20" y="86" fill="#fecaca" font-size="11.5">• Central necrotic core volume</text>
+    <text x="20" y="102" fill="#fecaca" font-size="11.5">• T2/FLAIR vasogenic edema halo</text>
+    <text x="20" y="118" fill="#fecaca" font-size="11.5">• Hypervascular neo-angiogenesis</text>
+  </g>
+
+  <!-- Node 8: Model B - Dural Mass Specialist -->
+  <g transform="translate(445, 730)" filter="url(#shadow)">
+    <rect width="310" height="130" rx="10" fill="#431407" stroke="#f97316" stroke-width="2" />
+    <text x="155" y="26" fill="#fb923c" font-size="13" font-weight="bold" text-anchor="middle">MODEL B: DURAL MASS SPECIALIST</text>
+    <line x1="15" y1="36" x2="295" y2="36" stroke="#7c2d12" stroke-width="1" />
+    <text x="20" y="54" fill="#fed7aa" font-size="11.5">• <tspan font-weight="bold">Dural Convexity Meningioma</tspan></text>
+    <text x="20" y="70" fill="#fed7aa" font-size="11.5">• Extra-axial cortical displacement</text>
+    <text x="20" y="86" fill="#fed7aa" font-size="11.5">• Pathognomonic dural tail sign</text>
+    <text x="20" y="102" fill="#fed7aa" font-size="11.5">• Calvarium bone hyperostosis</text>
+    <text x="20" y="118" fill="#fed7aa" font-size="11.5">• Venous sinus patency assessment</text>
+  </g>
+
+  <!-- Node 9: Model C - Sellar Mass Specialist -->
+  <g transform="translate(810, 730)" filter="url(#shadow)">
+    <rect width="310" height="130" rx="10" fill="#3b0764" stroke="#a855f7" stroke-width="2" />
+    <text x="155" y="26" fill="#c084fc" font-size="13" font-weight="bold" text-anchor="middle">MODEL C: SELLAR MASS SPECIALIST</text>
+    <line x1="15" y1="36" x2="295" y2="36" stroke="#581c87" stroke-width="1" />
+    <text x="20" y="54" fill="#e9d5ff" font-size="11.5">• <tspan font-weight="bold">Pituitary Macroadenoma</tspan></text>
+    <text x="20" y="70" fill="#e9d5ff" font-size="11.5">• Sellar fossa ballooning / expansion</text>
+    <text x="20" y="86" fill="#e9d5ff" font-size="11.5">• Suprasellar optic chiasm lift</text>
+    <text x="20" y="102" fill="#e9d5ff" font-size="11.5">• Cavernous sinus ICA encasement</text>
+    <text x="20" y="118" fill="#e9d5ff" font-size="11.5">• Sphenoid sinus bony erosion</text>
+  </g>
+
+  <!-- Converging Arrows into Stage 4 Joint Multi-Scale Fusion -->
+  <path d="M 235 860 L 235 880 L 445 880 L 445 894" fill="none" stroke="#ef4444" stroke-width="2.5" marker-end="url(#arrowRed)" />
+  <line x1="600" y1="860" x2="600" y2="894" stroke="#f97316" stroke-width="2.5" marker-end="url(#arrowOrange)" />
+  <path d="M 965 860 L 965 880 L 755 880 L 755 894" fill="none" stroke="#a855f7" stroke-width="2.5" marker-end="url(#arrowPurple)" />
+
+  <!-- Node 10: Stage 4 Joint Multi-Scale Fusion -->
+  <g transform="translate(380, 900)" filter="url(#shadow)">
+    <rect width="440" height="95" rx="10" fill="#172554" stroke="#3b82f6" stroke-width="2" />
+    <text x="220" y="26" fill="#60a5fa" font-size="13.5" font-weight="bold" text-anchor="middle">STAGE 4: JOINT MULTI-SCALE FUSION &amp; BIOMETRICS</text>
+    <line x1="20" y1="36" x2="420" y2="36" stroke="#1e3a8a" stroke-width="1" />
+    <text x="25" y="54" fill="#dbeafe" font-size="11.5">• <tspan font-weight="bold">3D Volumetric Segmentation:</tspan> Multi-compartment Dice &amp; 95% Hausdorff</text>
+    <text x="25" y="70" fill="#dbeafe" font-size="11.5">• <tspan font-weight="bold">Vessel Encasement Index:</tspan> Circumferential degree (0° - 360°) of arterial contact</text>
+    <text x="25" y="86" fill="#dbeafe" font-size="11.5">• <tspan font-weight="bold">Uncertainty Quantification:</tspan> Monte Carlo Dropout Epistemic Confidence</text>
+  </g>
+
+  <!-- Arrow 4 -> 5 -->
+  <line x1="600" y1="995" x2="600" y2="1024" stroke="#60a5fa" stroke-width="2.5" marker-end="url(#arrowBlue)" />
+
+  <!-- Node 11: Stage 5 Tumor Growth Dynamics (PDEs) -->
+  <g transform="translate(380, 1030)" filter="url(#shadow)">
+    <rect width="440" height="110" rx="10" fill="#2e1065" stroke="#8b5cf6" stroke-width="2" />
+    <text x="220" y="26" fill="#a78bfa" font-size="13.5" font-weight="bold" text-anchor="middle">STAGE 5: BIOPHYSICAL TUMOR GROWTH DYNAMICS (PDE)</text>
+    <line x1="20" y1="36" x2="420" y2="36" stroke="#3b0764" stroke-width="1" />
+    <text x="25" y="54" fill="#ede9fe" font-size="11.5">• <tspan font-weight="bold">Reaction-Diffusion Model:</tspan> ∂u/∂t = ∇ · (D(x)∇u) + ρu(1 - u)</text>
+    <text x="25" y="70" fill="#ede9fe" font-size="11.5">• <tspan font-weight="bold">Anisotropic Diffusion Tensor:</tspan> D(x) guided by DTI white matter tracts</text>
+    <text x="25" y="86" fill="#ede9fe" font-size="11.5">• <tspan font-weight="bold">Mass Effect / Midline Shift:</tspan> Elastodynamic Navier-Cauchy solid tissue stress</text>
+    <text x="25" y="102" fill="#ede9fe" font-size="11.5">• <tspan font-weight="bold">Trajectory Simulation:</tspan> 30, 60 &amp; 90-day volumetric invasion forecasting</text>
+  </g>
+
+  <!-- Arrow 5 -> 6 -->
+  <line x1="600" y1="1140" x2="600" y2="1174" stroke="#a78bfa" stroke-width="2.5" marker-end="url(#arrowPurple)" />
+
+  <!-- Node 12: Stage 6 Clinical PACS & 3D HUD -->
+  <g transform="translate(380, 1180)" filter="url(#shadow)">
+    <rect width="440" height="112" rx="10" fill="#042f2e" stroke="#14b8a6" stroke-width="2.5" />
+    <text x="220" y="26" fill="#2dd4bf" font-size="14" font-weight="bold" text-anchor="middle">STAGE 6: CLINICAL PACS &amp; 3D HOLOGRAPHIC HUD</text>
+    <line x1="20" y1="36" x2="420" y2="36" stroke="#134e4a" stroke-width="1" />
+    <text x="25" y="54" fill="#ccfbf1" font-size="11.5">• <tspan font-weight="bold">Interactive Three.js Hologram:</tspan> Multi-layer Skull, Arteries, Cortex &amp; Tumor</text>
+    <text x="25" y="70" fill="#ccfbf1" font-size="11.5">• <tspan font-weight="bold">Dual-Display Stage Projector:</tspan> Zero-latency BroadcastChannel synchronization</text>
+    <text x="25" y="86" fill="#ccfbf1" font-size="11.5">• <tspan font-weight="bold">Human-in-the-Loop Feedback:</tspan> Clinician Accept/Correct/Reject Audit Log</text>
+    <text x="25" y="102" fill="#ccfbf1" font-size="11.5">• <tspan font-weight="bold">Automated Radiology Dossier:</tspan> Structured DICOM / PDF diagnostic report</text>
+  </g>
+
+  <!-- Regulatory Footer Note -->
+  <text x="600" y="1330" fill="#64748b" font-size="11" text-anchor="middle" font-family="monospace">RESEARCH ARCHITECTURE SPECIFICATION • DEVELOPED BY DAR REHAN RASOOL • NEUROSCAN-AI</text>
+</svg>
