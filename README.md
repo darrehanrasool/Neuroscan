@@ -365,7 +365,7 @@ To bring clinical presentation and academic defense to the next level, Neuroscan
    - **360° Continuous Orbit Rotation & Cinematic Shading:** Automatic slow rotation with interactive mouse/trackpad drag orbit, pan, and zoom.
 
 2. **Dedicated Stage Projector Route (`/projector`):**
-   - High-contrast, pure-black background ($#000000$) optimized for dark auditorium projectors and lecture hall screens.
+   - High-contrast, pure-black background (`#000000`) optimized for dark auditorium projectors and lecture hall screens.
    - Floating clinical telemetry overlay displaying patient ID, tumor diagnosis, anatomical region, and model confidence without UI clutter.
    - **True Fullscreen Mode:** Press <kbd>F</kbd> or click the corner icon to expand to borderless 4K/1080p projection.
 
