@@ -861,7 +861,7 @@ export default function Home() {
           <span>Research Use Only (RUO) • Not Certified as a Medical Device • Not for Primary Clinical Diagnosis</span>
         </p>
         <p className="text-[11px] text-slate-500">
-          Developed by Dar Rehan Rasool &amp; Shafiya Pampori • Supervised by Dr. Syed Wajid Alam • Islamic University of Science &amp; Technology (IUST)
+          Supervised by Dr. Syed Wajid Alam* • Developed by Dar Rehan Rasool &amp; Shafiya Bashir Pampori • Islamic University of Science &amp; Technology (IUST)
         </p>
       </footer>
 

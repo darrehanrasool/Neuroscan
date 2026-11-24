@@ -15,6 +15,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Code Style: Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![Faculty Supervisor](https://img.shields.io/badge/Faculty%20Supervisor-Dr.%20Syed%20Wajid%20Alam*-7928ca.svg)](https://github.com/darrehanrasool/Neuroscan)
 [![Project Lead](https://img.shields.io/badge/Project%20Lead-Dar%20Rehan%20Rasool-0284c7.svg)](https://github.com/darrehanrasool)
 [![Copyright](https://img.shields.io/badge/Copyright-%40darrehanrasool-10b981.svg)](https://github.com/darrehanrasool)
 
@@ -453,12 +454,20 @@ Open your browser and navigate to `http://localhost:3000`.
 
 ---
 
-## 👥 Authors & Academic Affiliation
+## 👥 Research Team & Authorship
 
-- **Project Lead & Student Contributor:** [**Dar Rehan Rasool**](https://github.com/darrehanrasool) (M.Tech Student, Centre for Artificial Intelligence, IUST)
-- **Student Contributor:** [**Shafiya Pampori**](https://github.com/shafiyabashirpampori) (M.Tech Student, Centre for Artificial Intelligence, IUST)
-- **Faculty Supervisor:** **Dr. Syed Wajid Alam** (Assistant Professor, Department of Artificial Intelligence, IUST)
-- **Institution:** Islamic University of Science and Technology (IUST), Awantipora, Jammu & Kashmir, India
+This research project and clinical diagnostic workstation is collaboratively developed under faculty guidance and supervision:
+
+| Role | Name | Designation & Affiliation | Research & Project Contribution |
+| :--- | :--- | :--- | :--- |
+| **Faculty Research Supervisor** | **Dr. Syed Wajid Alam\*** | Assistant Professor, Department of Artificial Intelligence, IUST | Project Conceptualization, Research Supervision & Strategic Clinical Architecture Direction |
+| **Project Lead & Contributing Student** | [**Dar Rehan Rasool**](https://github.com/darrehanrasool) | M.Tech Student, Centre for Artificial Intelligence, IUST | Deep Residual-SE CNN Pipeline, Zero-Leakage Holdout Benchmarking, Three.js 3D Projector Hologram & PACS Workstation |
+| **Contributing Student** | [**Shafiya Bashir Pampori**](https://github.com/shafiyabashirpampori) | M.Tech Student, Centre for Artificial Intelligence, IUST | Multi-Class Clinical Cohort Curation, Statistical Exploratory Data Analysis & Diagnostic Reporting |
+
+- **Academic Unit**: Centre for Artificial Intelligence (CAI) & Department of Artificial Intelligence
+- **Institution**: Islamic University of Science and Technology (IUST), Awantipora, Jammu & Kashmir, India
+- **Copyright & Handle**: `@darrehanrasool` • [GitHub: darrehanrasool](https://github.com/darrehanrasool)
+- *\* Denotes corresponding/supervising senior faculty author.*
 
 ---
 
@@ -468,8 +477,8 @@ This project is licensed under the MIT License. See [LICENSE](LICENSE) for detai
 
 If referencing this work in academic presentations or publications, please cite:
 ```bibtex
-@software{rasool2026neuroscan,
-  author = {Dar Rehan Rasool and Shafiya Pampori and Syed Wajid Alam},
+@software{alam2026neuroscan,
+  author = {Dr. Syed Wajid Alam and Dar Rehan Rasool and Shafiya Bashir Pampori},
   title = {NeuroScan: Multi-Class Brain Tumor MRI Diagnosis via Deep Residual-Attention Networks and Zero-Leakage Holdout Benchmarking},
   year = {2026},
   url = {https://github.com/darrehanrasool/Neuroscan}
