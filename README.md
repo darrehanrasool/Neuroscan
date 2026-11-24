@@ -322,6 +322,57 @@ Demonstrates the **Difference Map** mode, which subtracts healthy baseline paren
 
 ---
 
+## 📽️ 3D Volumetric Holographic Viewer & Dual-Display Projector Theater Mode
+
+To bring clinical presentation and academic defense to the next level, Neuroscan includes an interactive **3D Volumetric Holographic Viewer** built with **Three.js** and a dedicated **Projector Theater Mode** designed specifically for external auditorium projectors and secondary wall displays.
+
+```
+┌─────────────────────────────────────────────────────────┐       ┌─────────────────────────────────────────────────────────┐
+│              LAPTOP SCREEN (Presenter HUD)              │       │             PROJECTOR / WALL (Auditorium Stage)         │
+│                 http://localhost:3000                   │       │               http://localhost:3000/projector           │
+│                                                         │       │                                                         │
+│  [ Patient Cases ]   [ Softmax Probabilities ]          │       │           ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░             │
+│  [ Upload MRI    ]   [ Voice Narration Controls ]       │ =====>│           ░░░   3D VOLUMETRIC BRAIN     ░░░             │
+│  [ 2D / 3D Switch]   [ Human-in-the-Loop Audit  ]       │ (Web  │           ░░░   PULSING GLIOMA CORE     ░░░             │
+│                                                         │ Sync) │           ░░░   VASOGENIC EDEMA CLOUD   ░░░             │
+│  Click any patient or tumor to dynamically update model │       │           ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░             │
+└─────────────────────────────────────────────────────────┘       └─────────────────────────────────────────────────────────┘
+```
+
+### Key Capabilities:
+1. **Interactive Three.js 3D Holographic Rendering:**
+   - **Translucent Cerebral Cortex:** Realistic bilateral hemispheres with procedural sulcal and gyral folds, subcortical lateral ventricles, and brainstem.
+   - **Pathological 3D Tumor Morphologies:**
+     - **Glioblastoma (Glioma):** Multi-layered irregular malignant core in vibrant orange-red with an expansive pulsing green vasogenic edema cloud.
+     - **Dural Meningioma:** Circumscribed extra-axial amber convex mass attached along the parietal convexity with simulated dural tail vector.
+     - **Pituitary Macroadenoma:** Sellar and suprasellar dumbbell mass situated at the cranial base in royal purple.
+     - **Normal Control:** Clear translucent brain model highlighting intact ventricular symmetry and zero mass effect.
+   - **Dynamic 3D Axial Clipping Cross-Section:** An interactive axial plane cutter slider that slices through the cortical mantle in real-time, allowing clinicians to inspect internal subcortical lesion depth and ventricular effacement.
+   - **360° Continuous Orbit Rotation & Cinematic Shading:** Automatic slow rotation with interactive mouse/trackpad drag orbit, pan, and zoom.
+
+2. **Dedicated Stage Projector Route (`/projector`):**
+   - High-contrast, pure-black background ($#000000$) optimized for dark auditorium projectors and lecture hall screens.
+   - Floating clinical telemetry overlay displaying patient ID, tumor diagnosis, anatomical region, and model confidence without UI clutter.
+   - **True Fullscreen Mode:** Press <kbd>F</kbd> or click the corner icon to expand to borderless 4K/1080p projection.
+
+3. **Zero-Latency Dual-Display Synchronization:**
+   - Connects the laptop presenter dashboard to the external projector screen using the high-performance browser **`BroadcastChannel` API** (`"neuroscan_projector_sync"`).
+   - Presenters control patient selection, reports, and voice narration from their laptop while the projector displays purely the 3D holographic model, updating instantly with zero network delay or page refreshes.
+
+4. **Auditorium Keyboard Presentation Hotkeys:**
+   | Key | Action | Description |
+   | :--- | :--- | :--- |
+   | <kbd>F</kbd> | **Toggle Fullscreen** | Enter / exit full-viewport projector theater mode |
+   | <kbd>Space</kbd> | **Pause / Resume Orbit** | Freeze 3D rotation at any angle to explain anatomy |
+   | <kbd>1</kbd> | **Glioma** | Switch instantly to High-Grade Glioblastoma with vasogenic edema |
+   | <kbd>2</kbd> | **Meningioma** | Switch instantly to Dural Convexity Meningioma |
+   | <kbd>3</kbd> | **Pituitary** | Switch instantly to Sellar Pituitary Macroadenoma |
+   | <kbd>4</kbd> | **Normal Brain** | Switch instantly to Normal Healthy Brain Parenchyma |
+   | <kbd>Drag</kbd> | **Rotate View** | Click & drag mouse or trackpad to orbit around brain |
+   | <kbd>Scroll</kbd> | **Zoom In / Out** | Mouse wheel or two-finger pinch to inspect tumor margins |
+
+---
+
 ## 🛠️ Workstation Clinical Features: Difference Maps, Voice Narration & PDF Reports
 
 The workstation integrates several advanced clinical tools designed for real radiologist workflows:
@@ -342,6 +393,9 @@ The workstation integrates several advanced clinical tools designed for real rad
    - Click **"Medical Report (PDF)"** to open an official hospital dossier with patient demographics, MRN, scan protocol, AI clinical impression, differential diagnosis probability table, radiologist notes, and authorized signature.
 5. **Academic Defense & 12 Figures Modal:**
    - Click **"12 Figures & ML Defense"** to open an interactive modal containing all 12 publication figures, mathematical formulations, and faculty Q&A talking points.
+6. **Human-in-the-Loop (HITL) Active Learning Audit Loop (`/api/feedback`):**
+   - Addresses clinical validation requirements: neuroradiologists can verify or override AI inferences via **Accept AI Diagnosis**, **Correct Diagnosis (Select True Class)**, or **Reject as Outlier**.
+   - Every action and clinician commentary is permanently recorded with timestamp, case ID, physician notes, and unique cryptographic audit tracking in `data/feedback_audit_log.json`, establishing a continuous active retraining pipeline.
 
 ---
 

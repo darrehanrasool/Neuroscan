@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { MRICase, PRELOADED_MRI_CASES } from "@/lib/mriData";
 import { medicalAudio } from "@/lib/medicalAudioEngine";
 import { MRIViewer, VisualizationMode } from "@/components/MRIViewer";
+import { Brain3DViewer } from "@/components/Brain3DViewer";
 import { RadiologyReportModal } from "@/components/RadiologyReportModal";
 import { AcademicDefenseModal } from "@/components/AcademicDefenseModal";
 import { UploadMRIModal } from "@/components/UploadMRIModal";
@@ -37,12 +38,15 @@ import {
   PlusCircle,
   Edit3,
   XCircle,
-  Database
+  Database,
+  Monitor,
+  Box
 } from "lucide-react";
 
 export default function Home() {
   const [casesList, setCasesList] = useState<MRICase[]>(PRELOADED_MRI_CASES);
   const [selectedCase, setSelectedCase] = useState<MRICase>(PRELOADED_MRI_CASES[0]);
+  const [displayDimension, setDisplayDimension] = useState<"2d" | "3d">("2d");
 
   // Advanced Visualization Modes
   const [visMode, setVisMode] = useState<VisualizationMode>("fused");
@@ -119,6 +123,17 @@ export default function Home() {
   // Trigger Sound & Voice upon selecting a case
   const handleSelectCase = (mriCase: MRICase) => {
     setSelectedCase(mriCase);
+
+    // Sync with secondary projector window via BroadcastChannel
+    if (typeof window !== "undefined") {
+      try {
+        const channel = new BroadcastChannel("neuroscan_projector_sync");
+        channel.postMessage({ type: "CASE_CHANGE", caseId: mriCase.id });
+        channel.close();
+      } catch (e) {
+        // ignore
+      }
+    }
 
     let speechText = "";
     if (mriCase.severity === "danger") {
@@ -245,6 +260,18 @@ export default function Home() {
             >
               <Upload className="w-4 h-4 text-white" />
               <span>Upload MRI Scan</span>
+            </button>
+
+            {/* 3D PROJECTOR STAGE BUTTON */}
+            <button
+              onClick={() => {
+                window.open("/projector", "NeuroscanProjector", "width=1280,height=720,menubar=no,toolbar=no");
+              }}
+              title="Launch Dual-Display Projector Theater"
+              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-bold shadow-lg shadow-purple-900/40 border border-purple-400/40 transition-all transform hover:scale-[1.02]"
+            >
+              <Monitor className="w-4 h-4 text-purple-200" />
+              <span className="hidden sm:inline">3D Projector Stage</span>
             </button>
 
             {/* Audio Toggle */}
@@ -524,233 +551,318 @@ export default function Home() {
 
         {/* Center & Right Column: PACS MRI Canvas & Advanced Visualisation Deck (8 cols) */}
         <section className="lg:col-span-8 flex flex-col space-y-4">
-          {/* Main DICOM / MRI Canvas Viewer */}
-          <div className="relative">
-            <MRIViewer
-              currentCase={selectedCase}
-              gradCamOpacity={gradCamOpacity}
-              showContour={showContour}
-              showHeatmap={showHeatmap}
-              colorMap={colorMap}
-              visualizationMode={visMode}
-              splitPosition={splitPos}
-              onSplitChange={setSplitPos}
-            />
-
-            {/* Quick PACS HUD Status Overlay */}
-            <div className="absolute top-4 left-4 z-10 flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-slate-900/90 border border-slate-700/80 backdrop-blur-md">
-              <span
-                className={`h-2.5 w-2.5 rounded-full ${
-                  selectedCase.severity === "danger"
-                    ? "bg-red-500 animate-ping"
-                    : selectedCase.severity === "warning"
-                    ? "bg-amber-500 animate-pulse"
-                    : "bg-emerald-500"
+          {/* Dimension Selector Bar: 2D DICOM vs 3D Holographic Theater */}
+          <div className="flex flex-wrap items-center justify-between p-2 rounded-2xl bg-slate-900/90 border border-slate-800 shadow-xl backdrop-blur-xl gap-2">
+            <div className="flex items-center space-x-1.5">
+              <button
+                onClick={() => setDisplayDimension("2d")}
+                className={`flex items-center space-x-2 px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold transition-all ${
+                  displayDimension === "2d"
+                    ? "bg-cyan-600 text-white shadow-md shadow-cyan-900/50"
+                    : "text-slate-400 hover:text-white hover:bg-slate-800/60"
                 }`}
-              />
-              <span className="text-xs font-bold font-mono text-white uppercase">
-                {selectedCase.severity === "danger"
-                  ? "MALIGNANT LESION DETECTED"
-                  : selectedCase.severity === "warning"
-                  ? "SUSPICIOUS MASS DETECTED"
-                  : "NORMAL BRAIN PARENCHYMA"}
-              </span>
+              >
+                <Layers className="w-3.5 h-3.5" />
+                <span>2D DICOM & Grad-CAM Heatmaps</span>
+              </button>
+
+              <button
+                onClick={() => setDisplayDimension("3d")}
+                className={`flex items-center space-x-2 px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold transition-all ${
+                  displayDimension === "3d"
+                    ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md shadow-purple-900/50"
+                    : "text-slate-400 hover:text-white hover:bg-slate-800/60"
+                }`}
+              >
+                <Box className="w-3.5 h-3.5 text-purple-300" />
+                <span>3D Holographic Volumetric Viewer</span>
+                <span className="text-[10px] bg-purple-950 text-purple-300 px-1.5 py-0.5 rounded border border-purple-700">Projector-Ready</span>
+              </button>
             </div>
 
-            {/* Top Right Mode Badge */}
-            <div className="absolute top-4 right-4 z-10 px-3 py-1 rounded-lg bg-black/80 text-[11px] font-mono text-cyan-300 border border-white/10 flex items-center space-x-1.5">
-              <Sparkles className="w-3 h-3 text-cyan-400" />
-              <span>
-                Mode:{" "}
-                {visMode === "fused"
-                  ? "Fused Overlay"
-                  : visMode === "difference"
-                  ? "Subtraction Difference"
-                  : visMode === "spotlight"
-                  ? "Portion Spotlight"
-                  : "Split-Screen Wiper"}
-              </span>
-            </div>
+            <button
+              onClick={() => {
+                window.open("/projector", "NeuroscanProjector", "width=1280,height=720,menubar=no,toolbar=no");
+              }}
+              title="Pop out standalone 3D display for external projector screen"
+              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-purple-300 border border-purple-800/60 text-xs font-mono transition-all"
+            >
+              <Monitor className="w-3.5 h-3.5 text-purple-400" />
+              <span>Launch Projector Stage</span>
+            </button>
           </div>
 
-          {/* ADVANCED VISUALISATION CONTROLS & DIFFERENCE ENGINE */}
-          <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 shadow-xl backdrop-blur-xl space-y-4">
-            {/* Visualisation Mode Selector Tabs */}
-            <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-slate-800">
-              <div className="flex items-center space-x-2">
-                <Sliders className="w-4 h-4 text-cyan-400" />
-                <h3 className="text-xs font-bold text-white uppercase tracking-wider font-mono">
-                  Advanced Difference & Localization Modes:
-                </h3>
-              </div>
-
-              {/* 4 Mode Buttons */}
-              <div className="flex flex-wrap rounded-xl bg-slate-950 p-1 border border-slate-800 text-xs font-mono">
-                <button
-                  onClick={() => setVisMode("fused")}
-                  className={`px-3 py-1.5 rounded-lg transition-all flex items-center space-x-1.5 ${
-                    visMode === "fused"
-                      ? "bg-cyan-600 text-white font-bold"
-                      : "text-slate-400 hover:text-white"
-                  }`}
-                >
-                  <Layers className="w-3 h-3" />
-                  <span>Fused Overlay</span>
-                </button>
-
-                <button
-                  onClick={() => setVisMode("difference")}
-                  className={`px-3 py-1.5 rounded-lg transition-all flex items-center space-x-1.5 ${
-                    visMode === "difference"
-                      ? "bg-emerald-600 text-white font-bold"
-                      : "text-slate-400 hover:text-white"
-                  }`}
-                >
-                  <Scissors className="w-3 h-3" />
-                  <span>Difference Map</span>
-                </button>
-
-                <button
-                  onClick={() => setVisMode("spotlight")}
-                  className={`px-3 py-1.5 rounded-lg transition-all flex items-center space-x-1.5 ${
-                    visMode === "spotlight"
-                      ? "bg-amber-600 text-white font-bold"
-                      : "text-slate-400 hover:text-white"
-                  }`}
-                >
-                  <Crosshair className="w-3 h-3" />
-                  <span>Portion Spotlight</span>
-                </button>
-
-                <button
-                  onClick={() => setVisMode("split")}
-                  className={`px-3 py-1.5 rounded-lg transition-all flex items-center space-x-1.5 ${
-                    visMode === "split"
-                      ? "bg-purple-600 text-white font-bold"
-                      : "text-slate-400 hover:text-white"
-                  }`}
-                >
-                  <SplitSquareVertical className="w-3 h-3" />
-                  <span>Interactive Split Wiper</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Split Wiper Slider (Active when in split mode) */}
-            {visMode === "split" && (
-              <div className="p-3 rounded-xl bg-purple-950/40 border border-purple-800/60 space-y-2">
-                <div className="flex justify-between items-center text-xs">
-                  <span className="text-purple-300 font-mono flex items-center space-x-1.5">
-                    <SplitSquareVertical className="w-3.5 h-3.5 text-purple-400" />
-                    <span>Split Wiper Position (Raw MRI vs Detection):</span>
-                  </span>
-                  <span className="font-mono font-bold text-white">
-                    {Math.round(splitPos * 100)}%
-                  </span>
-                </div>
-                <input
-                  type="range"
-                  min="0.05"
-                  max="0.95"
-                  step="0.01"
-                  value={splitPos}
-                  onChange={(e) => setSplitPos(Number(e.target.value))}
-                  className="w-full accent-purple-500 cursor-pointer"
+          {displayDimension === "2d" ? (
+            <>
+              {/* Main DICOM / MRI Canvas Viewer */}
+              <div className="relative">
+                <MRIViewer
+                  currentCase={selectedCase}
+                  gradCamOpacity={gradCamOpacity}
+                  showContour={showContour}
+                  showHeatmap={showHeatmap}
+                  colorMap={colorMap}
+                  visualizationMode={visMode}
+                  splitPosition={splitPos}
+                  onSplitChange={setSplitPos}
                 />
-                <div className="flex justify-between text-[10px] text-purple-400/80 font-mono">
-                  <span>← 100% Raw MRI</span>
-                  <span>Drag Slider or Drag Directly on Image</span>
-                  <span>100% AI Detection →</span>
-                </div>
-              </div>
-            )}
 
-            {/* Heatmap Opacity Slider (When in Fused Mode) */}
-            {visMode === "fused" && (
-              <div className="space-y-1.5">
-                <div className="flex justify-between items-center text-xs">
-                  <span className="text-slate-400 flex items-center space-x-1.5">
-                    <Eye className="w-3.5 h-3.5 text-cyan-400" />
-                    <span>Grad-CAM Neural Attention Opacity Blend:</span>
-                  </span>
-                  <span className="font-mono font-bold text-cyan-300">
-                    {Math.round(gradCamOpacity * 100)}% Heatmap
-                  </span>
-                </div>
-                <input
-                  type="range"
-                  min="0"
-                  max="1"
-                  step="0.05"
-                  value={gradCamOpacity}
-                  onChange={(e) => setGradCamOpacity(Number(e.target.value))}
-                  className="w-full accent-cyan-500 cursor-pointer"
-                />
-                <div className="flex justify-between text-[10px] text-slate-500 font-mono">
-                  <span>0% (Raw T1-CE MRI)</span>
-                  <span>50% (Fused Overlay)</span>
-                  <span>100% (Pure Attention Map)</span>
-                </div>
-              </div>
-            )}
-
-            {/* Colormaps & Toggles */}
-            <div className="pt-2 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs">
-              <div className="flex items-center space-x-4">
-                <label className="flex items-center space-x-2 cursor-pointer text-slate-300 hover:text-white">
-                  <input
-                    type="checkbox"
-                    checked={showContour}
-                    onChange={(e) => setShowContour(e.target.checked)}
-                    className="accent-red-500 rounded"
-                  />
-                  <span>Show Lesion Contour & Crosshairs</span>
-                </label>
-
-                <label className="flex items-center space-x-2 cursor-pointer text-slate-300 hover:text-white">
-                  <input
-                    type="checkbox"
-                    checked={showHeatmap}
-                    onChange={(e) => setShowHeatmap(e.target.checked)}
-                    className="accent-cyan-500 rounded"
-                  />
-                  <span>Enable Grad-CAM Activation</span>
-                </label>
-              </div>
-
-              {/* Colormap Selectors */}
-              <div className="flex items-center space-x-1.5 font-mono">
-                <span className="text-slate-500 text-[11px] mr-1">Colormap:</span>
-                {(["jet", "hot", "plasma"] as const).map((m) => (
-                  <button
-                    key={m}
-                    onClick={() => setColorMap(m)}
-                    className={`px-2.5 py-1 rounded-md text-[11px] uppercase transition-all ${
-                      colorMap === m
-                        ? "bg-cyan-600 text-white font-bold"
-                        : "bg-slate-800 text-slate-400 hover:text-white"
+                {/* Quick PACS HUD Status Overlay */}
+                <div className="absolute top-4 left-4 z-10 flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-slate-900/90 border border-slate-700/80 backdrop-blur-md">
+                  <span
+                    className={`h-2.5 w-2.5 rounded-full ${
+                      selectedCase.severity === "danger"
+                        ? "bg-red-500 animate-ping"
+                        : selectedCase.severity === "warning"
+                        ? "bg-amber-500 animate-pulse"
+                        : "bg-emerald-500"
                     }`}
-                  >
-                    {m}
-                  </button>
-                ))}
+                  />
+                  <span className="text-xs font-bold font-mono text-white uppercase">
+                    {selectedCase.severity === "danger"
+                      ? "MALIGNANT LESION DETECTED"
+                      : selectedCase.severity === "warning"
+                      ? "SUSPICIOUS MASS DETECTED"
+                      : "NORMAL BRAIN PARENCHYMA"}
+                  </span>
+                </div>
+
+                {/* Top Right Mode Badge */}
+                <div className="absolute top-4 right-4 z-10 px-3 py-1 rounded-lg bg-black/80 text-[11px] font-mono text-cyan-300 border border-white/10 flex items-center space-x-1.5">
+                  <Sparkles className="w-3 h-3 text-cyan-400" />
+                  <span>
+                    Mode:{" "}
+                    {visMode === "fused"
+                      ? "Fused Overlay"
+                      : visMode === "difference"
+                      ? "Subtraction Difference"
+                      : visMode === "spotlight"
+                      ? "Portion Spotlight"
+                      : "Split-Screen Wiper"}
+                  </span>
+                </div>
+              </div>
+
+              {/* ADVANCED VISUALISATION CONTROLS & DIFFERENCE ENGINE */}
+              <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 shadow-xl backdrop-blur-xl space-y-4">
+                {/* Visualisation Mode Selector Tabs */}
+                <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-slate-800">
+                  <div className="flex items-center space-x-2">
+                    <Sliders className="w-4 h-4 text-cyan-400" />
+                    <h3 className="text-xs font-bold text-white uppercase tracking-wider font-mono">
+                      Advanced Difference & Localization Modes:
+                    </h3>
+                  </div>
+
+                  {/* 4 Mode Buttons */}
+                  <div className="flex flex-wrap rounded-xl bg-slate-950 p-1 border border-slate-800 text-xs font-mono">
+                    <button
+                      onClick={() => setVisMode("fused")}
+                      className={`px-3 py-1.5 rounded-lg transition-all flex items-center space-x-1.5 ${
+                        visMode === "fused"
+                          ? "bg-cyan-600 text-white font-bold"
+                          : "text-slate-400 hover:text-white"
+                      }`}
+                    >
+                      <Layers className="w-3 h-3" />
+                      <span>Fused Overlay</span>
+                    </button>
+
+                    <button
+                      onClick={() => setVisMode("difference")}
+                      className={`px-3 py-1.5 rounded-lg transition-all flex items-center space-x-1.5 ${
+                        visMode === "difference"
+                          ? "bg-emerald-600 text-white font-bold"
+                          : "text-slate-400 hover:text-white"
+                      }`}
+                    >
+                      <Scissors className="w-3 h-3" />
+                      <span>Difference Map</span>
+                    </button>
+
+                    <button
+                      onClick={() => setVisMode("spotlight")}
+                      className={`px-3 py-1.5 rounded-lg transition-all flex items-center space-x-1.5 ${
+                        visMode === "spotlight"
+                          ? "bg-amber-600 text-white font-bold"
+                          : "text-slate-400 hover:text-white"
+                      }`}
+                    >
+                      <Crosshair className="w-3 h-3" />
+                      <span>Portion Spotlight</span>
+                    </button>
+
+                    <button
+                      onClick={() => setVisMode("split")}
+                      className={`px-3 py-1.5 rounded-lg transition-all flex items-center space-x-1.5 ${
+                        visMode === "split"
+                          ? "bg-purple-600 text-white font-bold"
+                          : "text-slate-400 hover:text-white"
+                      }`}
+                    >
+                      <SplitSquareVertical className="w-3 h-3" />
+                      <span>Interactive Split Wiper</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Split Wiper Slider (Active when in split mode) */}
+                {visMode === "split" && (
+                  <div className="p-3 rounded-xl bg-purple-950/40 border border-purple-800/60 space-y-2">
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="text-purple-300 font-mono flex items-center space-x-1.5">
+                        <SplitSquareVertical className="w-3.5 h-3.5 text-purple-400" />
+                        <span>Split Wiper Position (Raw MRI vs Detection):</span>
+                      </span>
+                      <span className="font-mono font-bold text-white">
+                        {Math.round(splitPos * 100)}%
+                      </span>
+                    </div>
+                    <input
+                      type="range"
+                      min="0.05"
+                      max="0.95"
+                      step="0.01"
+                      value={splitPos}
+                      onChange={(e) => setSplitPos(Number(e.target.value))}
+                      className="w-full accent-purple-500 cursor-pointer"
+                    />
+                    <div className="flex justify-between text-[10px] text-purple-400/80 font-mono">
+                      <span>← 100% Raw MRI</span>
+                      <span>Drag Slider or Drag Directly on Image</span>
+                      <span>100% AI Detection →</span>
+                    </div>
+                  </div>
+                )}
+
+                {/* Heatmap Opacity Slider (When in Fused Mode) */}
+                {visMode === "fused" && (
+                  <div className="space-y-1.5">
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="text-slate-400 flex items-center space-x-1.5">
+                        <Eye className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Grad-CAM Neural Attention Opacity Blend:</span>
+                      </span>
+                      <span className="font-mono font-bold text-cyan-300">
+                        {Math.round(gradCamOpacity * 100)}% Heatmap
+                      </span>
+                    </div>
+                    <input
+                      type="range"
+                      min="0"
+                      max="1"
+                      step="0.05"
+                      value={gradCamOpacity}
+                      onChange={(e) => setGradCamOpacity(Number(e.target.value))}
+                      className="w-full accent-cyan-500 cursor-pointer"
+                    />
+                    <div className="flex justify-between text-[10px] text-slate-500 font-mono">
+                      <span>0% (Raw T1-CE MRI)</span>
+                      <span>50% (Fused Overlay)</span>
+                      <span>100% (Pure Attention Map)</span>
+                    </div>
+                  </div>
+                )}
+
+                {/* Colormaps & Toggles */}
+                <div className="pt-2 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs">
+                  <div className="flex items-center space-x-4">
+                    <label className="flex items-center space-x-2 cursor-pointer text-slate-300 hover:text-white">
+                      <input
+                        type="checkbox"
+                        checked={showContour}
+                        onChange={(e) => setShowContour(e.target.checked)}
+                        className="accent-red-500 rounded"
+                      />
+                      <span>Show Lesion Contour & Crosshairs</span>
+                    </label>
+
+                    <label className="flex items-center space-x-2 cursor-pointer text-slate-300 hover:text-white">
+                      <input
+                        type="checkbox"
+                        checked={showHeatmap}
+                        onChange={(e) => setShowHeatmap(e.target.checked)}
+                        className="accent-cyan-500 rounded"
+                      />
+                      <span>Enable Grad-CAM Activation</span>
+                    </label>
+                  </div>
+
+                  {/* Colormap Selectors */}
+                  <div className="flex items-center space-x-1.5 font-mono">
+                    <span className="text-slate-500 text-[11px] mr-1">Colormap:</span>
+                    {(["jet", "hot", "plasma"] as const).map((m) => (
+                      <button
+                        key={m}
+                        onClick={() => setColorMap(m)}
+                        className={`px-2.5 py-1 rounded-md text-[11px] uppercase transition-all ${
+                          colorMap === m
+                            ? "bg-cyan-600 text-white font-bold"
+                            : "bg-slate-800 text-slate-400 hover:text-white"
+                        }`}
+                      >
+                        {m}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Mathematical Explainable AI Formulation Box */}
+              <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 shadow-xl backdrop-blur-xl text-xs space-y-2">
+                <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider font-mono flex items-center space-x-1.5">
+                  <Cpu className="w-3.5 h-3.5 text-cyan-400" />
+                  <span>Grad-CAM Gradient Attribution & Difference Subtraction Formulation</span>
+                </h3>
+                <div className="p-2.5 rounded-xl bg-slate-950/80 border border-slate-800 text-[10.5px] font-mono text-cyan-300">
+                  L_Grad-CAM = ReLU( Σ_k α_k · A^k )  where  α_k = (1/Z) Σ_i Σ_j (∂y^c / ∂A_ij^k)
+                </div>
+                <p className="text-[11px] text-slate-400 leading-relaxed font-sans">
+                  Computes gradients of score $y^c$ for class $c$ with respect to feature activation maps $A^k$ of the Stage 5 deep residual convolutional block. Rectified linear activation (ReLU) filters negative attributions, isolating exclusively the pathological pixels that triggered the positive tumor diagnosis.
+                </p>
+              </div>
+            </>
+          ) : (
+            <div className="space-y-4">
+              <div className="rounded-2xl border border-purple-900/50 overflow-hidden shadow-2xl bg-black">
+                <Brain3DViewer currentCase={selectedCase} isProjectorStandalone={false} />
+              </div>
+
+              {/* 3D Volumetric Stage & Dual-Display Projector Guide */}
+              <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 shadow-xl backdrop-blur-xl text-xs space-y-3">
+                <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                  <h3 className="text-xs font-bold text-purple-300 uppercase tracking-wider font-mono flex items-center space-x-1.5">
+                    <Monitor className="w-3.5 h-3.5 text-purple-400" />
+                    <span>Dual-Display Stage & Physical Projector Integration</span>
+                  </h3>
+                  <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800">
+                    Live BroadcastChannel Sync
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-[11px] font-mono">
+                  <div className="p-3 rounded-xl bg-slate-950/70 border border-slate-800/80 space-y-1">
+                    <span className="text-purple-400 font-bold block">1. Connect Hardware</span>
+                    <p className="text-slate-400 font-sans text-xs">
+                      Connect Mac to external projector via USB-C to HDMI adapter. Set macOS to <strong>Extended Display</strong> mode.
+                    </p>
+                  </div>
+                  <div className="p-3 rounded-xl bg-slate-950/70 border border-slate-800/80 space-y-1">
+                    <span className="text-cyan-400 font-bold block">2. Launch Theater</span>
+                    <p className="text-slate-400 font-sans text-xs">
+                      Click <strong>Launch Projector Stage</strong> to open <code className="text-cyan-300">/projector</code>. Drag that window to the projector screen and press <kbd className="bg-slate-800 px-1 rounded text-white">F</kbd> for fullscreen.
+                    </p>
+                  </div>
+                  <div className="p-3 rounded-xl bg-slate-950/70 border border-slate-800/80 space-y-1">
+                    <span className="text-emerald-400 font-bold block">3. Live Present</span>
+                    <p className="text-slate-400 font-sans text-xs">
+                      Select cases on this laptop dashboard. The 3D hologram on the projector wall updates instantaneously with zero lag.
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-
-          {/* Mathematical Explainable AI Formulation Box */}
-          <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 shadow-xl backdrop-blur-xl text-xs space-y-2">
-            <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider font-mono flex items-center space-x-1.5">
-              <Cpu className="w-3.5 h-3.5 text-cyan-400" />
-              <span>Grad-CAM Gradient Attribution & Difference Subtraction Formulation</span>
-            </h3>
-            <div className="p-2.5 rounded-xl bg-slate-950/80 border border-slate-800 text-[10.5px] font-mono text-cyan-300">
-              L_Grad-CAM = ReLU( Σ_k α_k · A^k )  where  α_k = (1/Z) Σ_i Σ_j (∂y^c / ∂A_ij^k)
-            </div>
-            <p className="text-[11px] text-slate-400 leading-relaxed font-sans">
-              Computes gradients of score $y^c$ for class $c$ with respect to feature activation maps $A^k$ of the Stage 5 deep residual convolutional block. Rectified linear activation (ReLU) filters negative attributions, isolating exclusively the pathological pixels that triggered the positive tumor diagnosis.
-            </p>
-          </div>
+          )}
         </section>
       </main>
 
